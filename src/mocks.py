@@ -139,10 +139,10 @@ class ReversiMock(ReversiBase):
         self._othello = othello
         self._grid = [[None] * side for _ in range(side)]
         if othello:
-            self._grid[side // 2 - 1][side // 2 - 1] = 2
-            self._grid[side // 2][side // 2] = 2
             self._grid[side // 2][side // 2 - 1] = 1
             self._grid[side // 2 - 1][side // 2] = 1
+            self._grid[side // 2 - 1][side // 2 - 1] = 2
+            self._grid[side // 2][side // 2] = 2
         self.num_moves = 0
 
     #
