@@ -199,7 +199,7 @@ class ReversiMock(ReversiBase):
         any meaningful value.
         """
         if self.done:
-            return [(-1,-1)]
+            return [(-1, -1)]
         else:
             avail_moves: List = []
             for x, j in enumerate(self.grid):
