@@ -119,6 +119,13 @@ class ReversiMock(ReversiBase):
         Raises:
             ValueError: If the parity of side and players is incorrect
         """
+        if players != 2:
+            raise ValueError("There can only be 2 players.")
+        if side < 4:
+            raise ValueError("The board can be no smaller than 4x4.")
+        if side % players != 0:
+            raise ValueError("The board side length must be divisible by the \
+                             number of players.")
         self._side = side
         self._players = players
         self._othello = othello
