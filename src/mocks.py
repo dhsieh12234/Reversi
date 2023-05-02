@@ -119,6 +119,7 @@ class ReversiMock(ReversiBase):
         Raises:
             ValueError: If the parity of side and players is incorrect
         """
+        
         if players != 2:
             raise ValueError("There can only be 2 players.")
         if side < 4:
@@ -129,6 +130,7 @@ class ReversiMock(ReversiBase):
         self._side = side
         self._players = players
         self._othello = othello
+        self.grid = [[None] * side for _ in range(side)]
 
     #
     # PROPERTIES
@@ -157,7 +159,7 @@ class ReversiMock(ReversiBase):
         meaning there is no piece in that location. Players are
         numbered from 1.
         """
-        raise NotImplementedError
+        return self.grid
 
     @property
     def turn(self) -> int:
