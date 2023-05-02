@@ -130,9 +130,9 @@ class ReversiMock(ReversiBase):
         self._side = side
         self._players = players
         self._othello = othello
-        self.grid = [[None] * side for _ in range(side)]
+        self._grid = [[None] * side for _ in range(side)]
         self.turn = 1
-        self.game_over = False
+        self._game_over = False
 
     #
     # PROPERTIES
@@ -161,7 +161,7 @@ class ReversiMock(ReversiBase):
         meaning there is no piece in that location. Players are
         numbered from 1.
         """
-        return self.grid
+        return self._grid
 
     @property
     def turn(self) -> int:
@@ -173,7 +173,7 @@ class ReversiMock(ReversiBase):
         If the game is over, this property will not return
         any meaningful value.
         """
-        if self.game_over:
+        if self.done:
             return None
         else:
             return self.turn % self.players
@@ -187,17 +187,25 @@ class ReversiMock(ReversiBase):
         If the game is over, this property will not return
         any meaningful value.
         """
-        if self.game_over:
+        if self.done:
             return None
         else:
-            
+            avail_moves = []
+            for x, j in enumerate(self.grid):
+                for y, k in in enumerate(j):
+                    if self.legal_move((x, y)):
+                        avail_moves.append((x, y))
+            return avail_moves
+
+
+
 
     @property
     def done(self) -> bool:
         """
         Returns True if the game is over, False otherwise.
         """
-        raise NotImplementedError
+        return self._game_over
 
     @property
     def outcome(self) -> List[int]:
