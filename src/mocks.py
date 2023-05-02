@@ -406,10 +406,11 @@ class ReversiMock(ReversiBase):
         of the game after applying the provided moves.
         """
         ret_grid = [row[:] for row in self.grid]
-        turn_count = self.num_moves
-        n = 0
-        x = 0
-        while n in range(len(moves)) and x <= self._players:
-            if not self.legal_move_helper(ret_grid, )
+        move = moves[0]
+        if not self.legal_move(move):
+            raise ValueError("The given move is not legal.")
+        i, j = move
+        ret_grid[i][j] = self.turn
+        return ret_grid
 
 
