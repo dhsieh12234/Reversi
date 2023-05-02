@@ -131,7 +131,7 @@ class ReversiMock(ReversiBase):
         self._players = players
         self._othello = othello
         self._grid = [[None] * side for _ in range(side)]
-        self.turn = 1
+        self._turn = 1
         self._game_over = False
 
     #
@@ -176,7 +176,7 @@ class ReversiMock(ReversiBase):
         if self.done:
             return None
         else:
-            return self.turn % self.players
+            return self._turn % self.players
 
     @property
     def available_moves(self) -> ListMovesType:
@@ -251,7 +251,10 @@ class ReversiMock(ReversiBase):
         return the number of the player (players are numbered
         from 1). Otherwise, return None.
         """
-        raise NotImplementedError
+        x, y = pos
+        if x >= self._side or y >= self._side:
+            raise ValueError("Specified position is outside the bounds.")
+        return self._grid[x][y]
 
     def legal_move(self, pos: Tuple[int, int]) -> bool:
         """
@@ -326,7 +329,10 @@ class ReversiMock(ReversiBase):
 
         Returns: None
         """
-        raise NotImplementedError
+        if x >= self._side or y >= self._side:
+            raise ValueError("Specified position is outside the bounds.")
+        x, y = pos
+        self._grid[x][y] = self.turn
 
 
     def simulate_moves(self,
