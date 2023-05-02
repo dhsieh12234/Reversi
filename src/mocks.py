@@ -218,7 +218,19 @@ class ReversiMock(ReversiBase):
         the list will contain more than one integer (representing
         the players who tied)
         """
-        raise NotImplementedError
+        ret_lst = []
+        if self._game_over:
+            return ret_lst
+        else:
+            if self._grid[0][0] != None: 
+                ret_lst.append(self._grid[0][0])
+            else:
+                count = 0
+                for players in range(self.num_players):
+                    count = count + 1
+                    ret_lst.append(count)
+            return ret_lst
+
 
     #
     # METHODS
