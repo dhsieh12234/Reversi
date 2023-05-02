@@ -176,7 +176,7 @@ class ReversiMock(ReversiBase):
         if self.done:
             return None
         else:
-            return self.num_moves + 1 % self.players
+            return self.num_moves + 1 % self.num_players
 
     @property
     def available_moves(self) -> ListMovesType:
@@ -216,7 +216,7 @@ class ReversiMock(ReversiBase):
         the players who tied)
         """
         ret_lst = []
-        if self._game_over:
+        if not self.game_over:
             return ret_lst
         else:
             if self._grid[0][0] != None: 
@@ -359,12 +359,31 @@ class ReversiMock(ReversiBase):
             if counter == self.num_players:
                 self.game_over = True
         
-        
 
-        
+    def load_game(self, turn: int, grid: BoardGridType) -> None:
+        """
+        Loads the state of a game, replacing the current
+        state of the game.
 
+        Args:
+            turn: The player number of the player that
+            would make the next move ("whose turn is it?")
+            Players are numbered from 1.
+            grid: The state of the board as a list of lists
+            (same as returned by the grid property)
 
+        Raises:
+             ValueError:
+             - If the value of turn is inconsistent
+               with the _players attribute.
+             - If the size of the grid is inconsistent
+               with the _side attribute.
+             - If any value in the grid is inconsistent
+               with the _players attribute.
 
+        Returns: None
+        """
+        raise NotImplementedError
 
     def simulate_moves(self,
                        moves: ListMovesType
