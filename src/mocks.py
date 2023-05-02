@@ -256,7 +256,29 @@ class ReversiMock(ReversiBase):
         method) could place a piece in the specified position,
         return True. Otherwise, return False.
         """
-        raise NotImplementedError
+        def in_board(pos: Tuple[int, int]) -> bool:
+            i, j = pos
+            return not ((i >= 0) and (i < self.side)\
+                         and (j >= 0) and (j < self.side)):
+        if not in_board(pos):
+            raise ValueError("The specified position is outside the bounds \
+                             of the board.")
+        i, j = pos
+        if self.grid[i][j] is not None:
+            return False
+        if pos == (0, 0) or pos == (self.side - 1, self.side - 1):
+            return True
+        
+        directions = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
+                      (0, -1), (1, -1), (1, 0), (1, 1)]
+
+        for d in directions:
+            k, l = d
+            n = 1
+            while (i + n * k, j + n * l)
+
+
+        
 
     def apply_move(self, pos: Tuple[int, int]) -> None:
         """
