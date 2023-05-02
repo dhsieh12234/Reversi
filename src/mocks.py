@@ -104,8 +104,15 @@ class ReversiStub(ReversiBase):
 
 class ReversiMock(ReversiBase):
     """
-
+    Mock Reversi class.
     """
+
+    _side: int
+    _players: int
+    _othello: bool
+    _grid: BoardGridType
+    num_moves: int
+
     def __init__(self, side: int, players: int, othello: bool):
         """
         Constructor
@@ -178,7 +185,7 @@ class ReversiMock(ReversiBase):
         any meaningful value.
         """
         if self.done:
-            return None
+            return -1
         else:
             return self.num_moves % self.num_players + 1
 
@@ -192,9 +199,9 @@ class ReversiMock(ReversiBase):
         any meaningful value.
         """
         if self.done:
-            return None
+            return [(-1,-1)]
         else:
-            avail_moves = []
+            avail_moves: List = []
             for x, j in enumerate(self.grid):
                 for y, k in enumerate(j):
                     if self.legal_move((x, y)):
@@ -219,14 +226,14 @@ class ReversiMock(ReversiBase):
         the list will contain more than one integer (representing
         the players who tied)
         """
-        ret_lst = []
+        ret_lst: List = []
         if not self.done:
             return ret_lst
         else:
             if self._grid[0][0] is not None: 
                 ret_lst.append(self._grid[0][0])
             else:
-                count = 0
+                count: int = 0
                 for players in range(self.num_players):
                     count = count + 1
                     ret_lst.append(count)
@@ -286,7 +293,7 @@ class ReversiMock(ReversiBase):
         if pos == (0, 0) or pos == (self._side - 1, self._side - 1):
             return True
         
-        directions = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
+        directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                       (0, -1), (1, -1), (1, 0), (1, 1)]
 
         for d in directions:
@@ -334,7 +341,7 @@ class ReversiMock(ReversiBase):
             raise ValueError("Specified position is outside the bounds.")
         self._grid[x][y] = self.turn
         self.num_moves += 1
-        counter = 0
+        counter: int = 0
         while self.available_moves == [] and counter <= self.num_players:
             self.num_moves += 1
             counter += 1
@@ -406,6 +413,6 @@ class ReversiMock(ReversiBase):
         the method was called on, reflecting the state
         of the game after applying the provided moves.
         """
-        sim_game = deepcopy(self)
+        sim_game: ReversiMock = deepcopy(self)
         sim_game.apply_move(moves[0])
         return sim_game
