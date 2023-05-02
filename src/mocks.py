@@ -131,6 +131,8 @@ class ReversiMock(ReversiBase):
         self._players = players
         self._othello = othello
         self.grid = [[None] * side for _ in range(side)]
+        self.turn = 1
+        self.game_over = False
 
     #
     # PROPERTIES
@@ -171,7 +173,10 @@ class ReversiMock(ReversiBase):
         If the game is over, this property will not return
         any meaningful value.
         """
-        raise NotImplementedError
+        if self.game_over:
+            return None
+        else:
+            return self.turn % self.players
 
     @property
     def available_moves(self) -> ListMovesType:
@@ -182,7 +187,10 @@ class ReversiMock(ReversiBase):
         If the game is over, this property will not return
         any meaningful value.
         """
-        raise NotImplementedError
+        if self.game_over:
+            return None
+        else:
+            
 
     @property
     def done(self) -> bool:
