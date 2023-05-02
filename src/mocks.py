@@ -172,7 +172,7 @@ class ReversiMock(ReversiBase):
         meaning there is no piece in that location. Players are
         numbered from 1.
         """
-        return self._grid
+        return deepcopy(self._grid)
 
     @property
     def turn(self) -> int:
