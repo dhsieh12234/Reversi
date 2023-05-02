@@ -192,7 +192,7 @@ class ReversiMock(ReversiBase):
         else:
             avail_moves = []
             for x, j in enumerate(self.grid):
-                for y, k in in enumerate(j):
+                for y, k in enumerate(j):
                     if self.legal_move((x, y)):
                         avail_moves.append((x, y))
             return avail_moves
@@ -270,8 +270,8 @@ class ReversiMock(ReversiBase):
         """
         def in_board(pos: Tuple[int, int]) -> bool:
             i, j = pos
-            return not ((i >= 0) and (i < self.side)\
-                         and (j >= 0) and (j < self.side)):
+            return ((i >= 0) and (i < self.side)\
+                         and (j >= 0) and (j < self.side))
         if not in_board(pos):
             raise ValueError("The specified position is outside the bounds \
                              of the board.")
@@ -286,8 +286,10 @@ class ReversiMock(ReversiBase):
 
         for d in directions:
             k, l = d
-            n = 1
-            while (i + n * k, j + n * l)
+            if in_board((i + k, j + l)):
+                if self.grid[i + k][j + l] is not None:
+                    return True
+        return False
 
 
         
