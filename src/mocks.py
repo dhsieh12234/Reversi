@@ -131,8 +131,12 @@ class ReversiMock(ReversiBase):
         self._players = players
         self._othello = othello
         self._grid = [[None] * side for _ in range(side)]
+        if othello:
+            self._grid[side // 2 - 1][side // 2 - 1] = 2
+            self._grid[side // 2][side // 2] = 2
+            self._grid[side // 2][side // 2 - 1] = 1
+            self._grid[side // 2 - 1][side // 2] = 1
         self.num_moves = 0
-        self.game_over = False
 
     #
     # PROPERTIES
@@ -176,7 +180,7 @@ class ReversiMock(ReversiBase):
         if self.done:
             return None
         else:
-            return self.num_moves + 1 % self.num_players
+            return self.num_moves % self.num_players + 1
 
     @property
     def available_moves(self) -> ListMovesType:
@@ -202,7 +206,7 @@ class ReversiMock(ReversiBase):
         """
         Returns True if the game is over, False otherwise.
         """
-        return self.game_over
+        return not ((self._grid[0][0] is None) and (self._grid[-1][-1] is None))
 
     @property
     def outcome(self) -> List[int]:
@@ -216,10 +220,10 @@ class ReversiMock(ReversiBase):
         the players who tied)
         """
         ret_lst = []
-        if not self.game_over:
+        if not self.done:
             return ret_lst
         else:
-            if self._grid[0][0] != None: 
+            if self._grid[0][0] is not None: 
                 ret_lst.append(self._grid[0][0])
             else:
                 count = 0
@@ -253,47 +257,6 @@ class ReversiMock(ReversiBase):
             raise ValueError("Specified position is outside the bounds.")
         return self._grid[x][y]
 
-    def legal_move_helper(self, grid: BoardGridType, pos: Tuple[int, int]) \
-        -> bool:
-        """
-        Checks if a move is legal given a board.
-
-        Args:
-            grid: board
-            pos: Position on the board
-
-        Raises:
-            ValueError: If the specified position is outside
-            the bounds of the board.
-
-        Returns: If the current player (as returned by the turn
-        method) could place a piece in the specified position,
-        return True. Otherwise, return False.
-        """
-        side = len(grid)
-        def in_board(pos: Tuple[int, int]) -> bool:
-            i, j = pos
-            return ((i >= 0) and (i < side)\
-                         and (j >= 0) and (j < side))
-        if not in_board(pos):
-            raise ValueError("The specified position is outside the bounds \
-                             of the board.")
-        i, j = pos
-        if grid[i][j] is not None:
-            return False
-        if pos == (0, 0) or pos == (side - 1, side - 1):
-            return True
-        
-        directions = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
-                      (0, -1), (1, -1), (1, 0), (1, 1)]
-
-        for d in directions:
-            k, l = d
-            if in_board((i + k, j + l)):
-                if grid[i + k][j + l] is not None:
-                    return True
-        return False
-
     
     def legal_move(self, pos: Tuple[int, int]) -> bool:
         """
@@ -310,9 +273,28 @@ class ReversiMock(ReversiBase):
         method) could place a piece in the specified position,
         return True. Otherwise, return False.
         """
-        return self.legal_move_helper(self.grid, pos)
+        def in_board(pos: Tuple[int, int]) -> bool:
+            i, j = pos
+            return ((i >= 0) and (i < self._side)\
+                         and (j >= 0) and (j < self._side))
+        if not in_board(pos):
+            raise ValueError("The specified position is outside the bounds \
+                             of the board.")
+        i, j = pos
+        if self.grid[i][j] is not None:
+            return False
+        if pos == (0, 0) or pos == (self._side - 1, self._side - 1):
+            return True
+        
+        directions = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
+                      (0, -1), (1, -1), (1, 0), (1, 1)]
 
-
+        for d in directions:
+            k, l = d
+            if in_board((i + k, j + l)):
+                if self.grid[i + k][j + l] is not None:
+                    return True
+        return False
         
 
     def apply_move(self, pos: Tuple[int, int]) -> None:
@@ -347,9 +329,9 @@ class ReversiMock(ReversiBase):
 
         Returns: None
         """
+        x, y = pos
         if x >= self._side or y >= self._side:
             raise ValueError("Specified position is outside the bounds.")
-        x, y = pos
         self._grid[x][y] = self.turn
         self.num_moves += 1
         counter = 0
@@ -357,7 +339,7 @@ class ReversiMock(ReversiBase):
             self.num_moves += 1
             counter += 1
             if counter == self.num_players:
-                self.game_over = True
+                self.done = True
         
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
@@ -384,7 +366,7 @@ class ReversiMock(ReversiBase):
         Returns: None
         """
         raise NotImplementedError
-
+    
     def simulate_moves(self,
                        moves: ListMovesType
                        ) -> "ReversiBase":
@@ -424,12 +406,6 @@ class ReversiMock(ReversiBase):
         the method was called on, reflecting the state
         of the game after applying the provided moves.
         """
-        ret_grid = [row[:] for row in self.grid]
-        move = moves[0]
-        if not self.legal_move(move):
-            raise ValueError("The given move is not legal.")
-        i, j = move
-        ret_grid[i][j] = self.turn
-        return ret_grid
-
-
+        sim_game = deepcopy(self)
+        sim_game.apply_move(moves[0])
+        return sim_game
