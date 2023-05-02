@@ -267,30 +267,6 @@ class ReversiMock(ReversiBase):
         """
         raise NotImplementedError
 
-    def load_game(self, turn: int, grid: BoardGridType) -> None:
-        """
-        Loads the state of a game, replacing the current
-        state of the game.
-
-        Args:
-            turn: The player number of the player that
-            would make the next move ("whose turn is it?")
-            Players are numbered from 1.
-            grid: The state of the board as a list of lists
-            (same as returned by the grid property)
-
-        Raises:
-             ValueError:
-             - If the value of turn is inconsistent
-               with the _players attribute.
-             - If the size of the grid is inconsistent
-               with the _side attribute.
-             - If any value in the grid is inconsistent
-               with the _players attribute.
-
-        Returns: None
-        """
-        raise NotImplementedError
 
     def simulate_moves(self,
                        moves: ListMovesType
