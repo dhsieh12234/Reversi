@@ -46,7 +46,7 @@ def to_string(board: BoardGridType) -> str:
     n: int = 2 * len(board) + 1
     str_grid: List[List[str]] = [[" "] * n for _ in range(n)]
 
-    #draw the boundaries of the squares
+    #fill in the grid
     for k, grid_row in enumerate(str_grid):
         for l, entry in enumerate(grid_row):
             #draw the boundaries of the squares in diagonal directions
@@ -58,12 +58,12 @@ def to_string(board: BoardGridType) -> str:
                 str_grid[k][l] = CLOCK_CHARS[(False, True, False, True)]
             elif l % 2 == 0:
                 str_grid[k][l] = CLOCK_CHARS[(True, False, True, False)]
-
-    #fill in the pieces
-    for i, board_row in enumerate(board):
-        for j, square in enumerate(board_row):
-            if not square is None:
-                str_grid[2 * i + 1][2 * j + 1] = str(square)
+            #fill in the pieces
+            else:
+                i = (k - 1) // 2
+                j = (l - 1) // 2
+                if not board[i][j] is None:
+                    str_grid[k][l] = str(board[i][j])
 
     #turn str_grid into a string
     rv: List[str] = [""] * n
