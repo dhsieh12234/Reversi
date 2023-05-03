@@ -341,12 +341,6 @@ class ReversiMock(ReversiBase):
             raise ValueError("Specified position is outside the bounds.")
         self._grid[x][y] = self.turn
         self.num_moves += 1
-        counter: int = 0
-        while self.available_moves == [] and counter <= self.num_players:
-            self.num_moves += 1
-            counter += 1
-            if counter == self.num_players:
-                self.done = True
         
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
