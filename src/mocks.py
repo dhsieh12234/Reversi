@@ -337,7 +337,7 @@ class ReversiMock(ReversiBase):
         Returns: None
         """
         x, y = pos
-        if x >= self._side or y >= self._side:
+        if x >= self._side or x < 0 or y >= self._side or y < 0:
             raise ValueError("Specified position is outside the bounds.")
         self._grid[x][y] = self.turn
         self.num_moves += 1
