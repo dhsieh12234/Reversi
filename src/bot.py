@@ -29,7 +29,7 @@ class ReversiBot:
             return move[0]
     
 def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiStub):
-    while len(game.outcome) < 2:
+    while not (len(game.outcome) == 1 or len(game.outcome) == 2) :
         if game.turn == 1:
             move = player1.get_move()
             if move is not None:
@@ -57,15 +57,15 @@ def play_num_games(numgames):
             player1_wins += 1
         if result[0] == 2:
             player2_wins += 1
-        if result[1] == 1:
+        if len(result) == 2:
             draws += 1
-    player1_perc = (player1_wins / numgames) * 100
-    player2_perc = (player2_wins / numgames) * 100
-    draw_perc = (draws / numgames) * 100
+    player1_perc = round(((player1_wins / numgames)* 100),2)
+    player2_perc = round(((player2_wins / numgames)* 100),2)
+    draw_perc = round(((draws / numgames) * 100),2)
 
-    print (f"Player 1 wins: {player1_perc}")
-    print (f"Player 2 wins: {player2_perc}")
-    print (f"Ties: {draw_perc}")
+    print (f"Player 1 wins: {player1_perc}%")
+    print (f"Player 2 wins: {player2_perc}%")
+    print (f"Ties: {draw_perc}%")
 
 
 def main():
