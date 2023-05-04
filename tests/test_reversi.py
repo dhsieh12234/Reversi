@@ -28,8 +28,6 @@ def test_size_2():
 def test_size_3():
     """
     Testing the size of the Othello Board 4x4 with configuration
-    Black = Player 1
-    White = Player 2
     """
     game = Reversi(side=4, players=2, othello=True)
     assert game.grid[1][2] == 1 and game.grid[2][1] == 1
@@ -173,7 +171,7 @@ def test_othello_avalible_moves():
     }
     assert len(game.avalible_moves) == len(legal)
     for vals in game.avalible_moves():
-        assert vals in legal
+        assert vals in legal, f"[{vals}] is not a legal move"
     res = [*set(game.avalible_moves)]
     assert len(res) == len(legal), f"There can't be duplicates"
 
@@ -232,10 +230,10 @@ def test_othello_game_over():
         (0, 7)
     ]
     helper_apply_move(game, moves)
-    assert game.done == True
-    assert len(game.outcome) == 2
+    assert game.done == True, f"There should be no avalible moves left and the players are tied"
+    assert len(game.outcome) == 2, f"There are two winners, they each have 19"
     assert 1 in game.outcome
-    assert 2 in game.outcome3
+    assert 2 in game.outcome
 
 
 
