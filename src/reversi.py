@@ -268,17 +268,8 @@ class ReversiBase(ABC):
         """
         raise NotImplementedError
 
-
+        
 class Reversi(ReversiBase):
-    """
-    Abstract base class for the game of Reversi
-    """
-
-    _side: int
-    _players: int
-    _othello: bool
-
-    def __init__(self, side: int, players: int, othello: bool):
         """
         Constructor
 
