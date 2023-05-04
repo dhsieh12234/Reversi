@@ -5,7 +5,7 @@ Bots for Reversi
 
 import random
 import sys
-from typing import Union
+from typing import Union, Tuple, Optional 
 
 from mocks import ReversiStub
 
@@ -15,20 +15,49 @@ from mocks import ReversiStub
 
 class ReversiBot:
     """
-    Gets the moves for a single player
+    Gets a random for the bot to act upon
     """
 
-    def __init__(self, player, stub: ReversiStub) -> None:
+    def __init__(self, player: int, stub: ReversiStub) -> None:
+        """
+        Constructor
+
+        Args: 
+            player: the player whos moves you are finding
+            stub: the grid of the current game
+        """
         self.player = player
         self.stub = stub
     
-    def get_move(self):
+    def get_move(self) -> Optional[Tuple[int,int]]:
+        """
+        From a set of avalible moves that can be taken by the player, 
+        one move is chosen from the list of moves
+        
+        Returns:
+            a desired move by the player, or None of there is not player
+
+        """
         moves = self.stub.available_moves
-        if len(moves) > 0:
-            move = random.choices(moves)
-            return move[0]
+        if len(moves) == 0:
+            return None
+        move = random.choices(moves)
+        return move[0]
     
-def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiStub):
+def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiStub) -> list[int]:
+    """
+    Play one singular game of ReversiStub which ends when either 4 moves have
+    been taken or a player hits (0,0)
+
+    Args:
+        player1: the first player of the game
+        player2: the second player of the game
+        game: the board that keeps track of the moves
+    
+    Returns
+        the outcome of game, whether it was a draw, win by player1 or win by
+        player 2
+    """
     while not (len(game.outcome) == 1 or len(game.outcome) == 2) :
         if game.turn == 1:
             move = player1.get_move()
@@ -44,7 +73,13 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiStub):
                 game._turn = 1
     return game.outcome 
     
-def play_num_games(numgames):
+def play_num_games(numgames: int) -> None:
+    """
+    Play a specific number of Reversi games specified by the user
+
+    Args:
+        numgames: the amount of times the game should be played
+    """
     player1_wins = 0
     player2_wins = 0
     draws = 0
@@ -73,23 +108,3 @@ def main():
     play_num_games(numgame)
 
 main()
-
-
-
-
-
-
-    
-    
-
-    
-
-    
-
-
-
-    
- 
-
-
-    
