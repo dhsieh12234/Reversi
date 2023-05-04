@@ -58,7 +58,7 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiStub) -> li
         the outcome of game, whether it was a draw, win by player1 or win by
         player 2
     """
-    while not (len(game.outcome) == 1 or len(game.outcome) == 2) :
+    while not (len(game.outcome) == 1 or len(game.outcome) == 2):
         if game.turn == 1:
             move = player1.get_move()
             if move is not None:
