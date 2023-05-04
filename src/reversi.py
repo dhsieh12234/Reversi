@@ -269,7 +269,7 @@ class ReversiBase(ABC):
         raise NotImplementedError
 
         
-class Reversi(ReversiBase):
+    class Reversi(ReversiBase):
         """
         Constructor
 
