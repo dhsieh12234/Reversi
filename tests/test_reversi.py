@@ -1,6 +1,24 @@
 
 from reversi import Reversi, ReversiBase
 
+def helper_avalible_legal(game: Reversi, moves: list[tuple[int, int]]):
+    """
+    a helper that runs a loop to check methods: legal_at, available_moves
+    """
+    assert len(moves) == len(game.available_moves), f"wrong number of moves"
+    res = [*set(game.avalible_moves)]
+    assert len(moves) == len(res), "no duplicates"
+    for vals in game.available_moves:
+        assert game.legal_move(vals) == True
+        assert vals in moves, f"[{vals}] is not a legal move"
+
+def helper_apply_move(game: Reversi, moves: list[tuple[int, int]]) -> None:
+    """
+    A helper that adds the moves to a board and return the board
+    """
+    for mov in moves:
+        game.apply_move(mov)
+
 
 def test_size_1():
     """
@@ -113,13 +131,6 @@ def test_othello_numplayers():
     """
     game = Reversi(side=8, players=2, othello=True)
     assert game.num_players == 2, f"Only two players allowed, you have [{game.num_players}]"
-
-def helper_apply_move(game: Reversi, moves: list[tuple[int, int]]) -> None:
-    """
-    A helper that adds the moves to a board and return the board
-    """
-    for mov in moves:
-        game.apply_move(mov)
 
 def test_othello_turn():
     """
@@ -235,6 +246,181 @@ def test_othello_game_over():
     assert 1 in game.outcome
     assert 2 in game.outcome
 
+def test_othello_6side():
+    """
+    Testing the initialization of a game of othello 6x6
+    """
+    game = Reversi(side=6, players=2, othello=True)
+    assert len(game.grid) == 6
+    for cols in game.grid:
+        assert len(cols) == 6
+    assert game.num_players == 2
+    assert game.turn == 1
+    pos = (2, 3)
+    assert game.piece_at(pos) == 1
+    zed = (0, 0)
+    assert game.piece_at(zed) == None
+    corr = (2, 1)
+    assert game.legal_move(corr) == True
+    wro = (0, 4)
+    assert game.legal_move(wro) == False
+    legal = {
+        (2, 1)
+        (1, 2)
+        (3, 4)
+        (4, 3)
+    }
+    assert len(game.available_moves) == len(legal), f"Wrong number of avalible moves"
+    for r in range(6):
+        for c in range(6):
+            if (r, c) in legal:
+                assert game.legal_move(
+                    (r, c)
+                ), f"{(r,c)} is a legal move, but legal_move returned False"
+            else:
+                assert not game.legal_move(
+                    (r, c)
+                ), f"{(r,c)} is not a legal move, but legal_move returned True"
+
+def test_othello_6side():
+    """
+    Testing the initialization of a game of othello 6x6
+    """
+    game = Reversi(side=20, players=2, othello=True)
+    assert len(game.grid) == 20
+    for cols in game.grid:
+        assert len(cols) == 20
+    assert game.num_players == 2
+    assert game.turn == 1
+    pos = (10, 10)
+    assert game.piece_at(pos) == 2
+    zed = (0, 0)
+    assert game.piece_at(zed) == None
+    corr = (8, 9)
+    assert game.legal_move(corr) == True
+    wro = (0, 4)
+    assert game.legal_move(wro) == False
+    legal = [
+        (8, 9),
+        (9, 8),
+        (10, 11),
+        (11, 10)
+    ]
+    assert len(game.available_moves) == len(legal), f"Wrong number of avalible moves"
+    for r in range(20):
+        for c in range(20):
+            if (r, c) in legal:
+                assert game.legal_move(
+                    (r, c)
+                ), f"{(r,c)} is a legal move, but legal_move returned False"
+            else:
+                assert not game.legal_move(
+                    (r, c)
+                ), f"{(r,c)} is not a legal move, but legal_move returned True"
+
+def test_not_othello1():
+    """
+    Testing the gameplay of a game of Reversu
+    """
+    game = Reversi(side=8, players=2, othello=False)
+    legal = [
+        (3, 3),
+        (3, 4),
+        (4, 4),
+        (4, 3)
+    ]
+    assert len(game.avalible_moves) == len(legal)
+    for vals in game.avalible_moves():
+        assert game.legal_move(vals) == True
+        assert vals in legal, f"[{vals}] is not a legal move"
+    res = [*set(game.avalible_moves)]
+    assert len(res) == len(legal), f"There can't be duplicates"
+    fal = (2, 3)
+    assert game.legal_move(fal) == False
+
+def test_not_othello2():
+    """
+    Testing the gameplay of a game of Reversi
+    """
+    game = Reversi(side=9, players=3, othello=False)
+
+    avalible = [
+        (3, 3),
+        (3, 4),
+        (3, 5),
+        (4, 3),
+        (4, 4),
+        (4, 5),
+        (5, 3),
+        (5, 4),
+        (5, 5)
+    ]
+    helper_avalible_legal(game, avalible)
+    applied = [
+        (3, 3),
+        (5, 5),
+        (3, 5),
+        (4, 4),
+        (3, 4),
+        (4, 5),
+        (5, 4),
+        (4, 3),
+        (5, 3)
+    ]
+    helper_apply_move(game, applied)
+    legal = [
+        (4, 2),
+        (5, 2),
+        (3, 6),
+        (4, 6),
+        (5, 6),
+        (6, 6)
+    ]
+    helper_avalible_legal(game, legal)
+
+def test_not_othello3():
+    """
+    Testing a full game of 5x5 not othello
+    """
+    game = Reversi(side=5, players=3, othello=False)
+    apply = [
+        (1, 1),
+        (1, 2),
+        (1, 3),
+        (2, 1),
+        (2, 2),
+        (2, 3),
+        (3, 1),
+        (3, 2),
+        (3, 3),
+        (1, 4),
+        (2, 4),
+        (0, 3),
+        (3, 4),
+        (0, 0),
+        (2, 0),
+        (1, 0),
+        (0, 2),
+        (0, 4),
+        (0, 1),
+        (3, 0),
+        (4, 0),
+        (4, 1),
+        (4, 2),
+        (4, 3),
+        (4, 4)
+    ]
+    helper_apply_move(game, apply)
+    model_ending = [
+        [2, 1, 2, 3, 3],
+        [2, 1, 2, 3, 1],
+        [2, 1, 2, 3, 2],
+        [2, 2, 2, 2, 1],
+        [3, 1, 2, 3, 1]
+    ]
+    assert game.grid == model_ending
+    assert game.done == True
+    assert game.outcome == [2]
 
 
 
