@@ -28,4 +28,3 @@ while not game.done:
     if game.done:
         winners: str = ", ".join([str(val) for val in game.outcome])
         print("The game is done. The winners are players " + winners + ".")
-
