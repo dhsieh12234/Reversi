@@ -522,7 +522,11 @@ class ReversiBotMock(ReversiMock):
         """
         Returns True if the game is over, False otherwise.
         """
-        if None not in  
+        for row in self.grid:
+            for square in row:
+                if square is None:
+                    return False
+        return True 
 
     @property
     def outcome(self) -> List[int]:
@@ -535,19 +539,24 @@ class ReversiBotMock(ReversiMock):
         the list will contain more than one integer (representing
         the players who tied)
         """
-        ret_lst: List = []
+        winner = []
         if not self.done:
-            return ret_lst
+            return winner
         else:
-            if self._grid[0][0] is not None: 
-                ret_lst.append(self._grid[0][0])
+            player1 = 0
+            player2 = 0 
+            for row in self.grid:
+                for square in row:
+                    if square == 1:
+                        player1 += 1
+                    if square == 2:
+                        player2 += 1
+            if player1 > player2:
+                winner.append(1)
+            if player2 < player1:
+                winner.append(2)
             else:
-                count: int = 0
-                for players in range(self.num_players):
-                    count = count + 1
-                    ret_lst.append(count)
-            return ret_lst
-
+                winner + [1,2]
 
     #
     # METHODS
@@ -599,8 +608,6 @@ class ReversiBotMock(ReversiMock):
         i, j = pos
         if self.grid[i][j] is not None:
             return False
-        if pos == (0, 0) or pos == (self._side - 1, self._side - 1):
-            return True
         
         directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                       (0, -1), (1, -1), (1, 0), (1, 1)]
@@ -610,7 +617,10 @@ class ReversiBotMock(ReversiMock):
             if in_board((i + k, j + l)):
                 if self.grid[i + k][j + l] is not None:
                     return True
+            if pos == (0, 0) or pos == (self._side - 1, self._side - 1):
+                return True
         return False
+
         
 
     def apply_move(self, pos: Tuple[int, int]) -> None:
@@ -645,11 +655,43 @@ class ReversiBotMock(ReversiMock):
 
         Returns: None
         """
+        def in_board(pos: Tuple[int, int]) -> bool:
+            i, j = pos
+            return ((i >= 0) and (i < self._side)\
+                         and (j >= 0) and (j < self._side))
         x, y = pos
         if x >= self._side or x < 0 or y >= self._side or y < 0:
             raise ValueError("Specified position is outside the bounds.")
         self._grid[x][y] = self.turn
+        
+        directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
+
+        for d in directions:
+            k,l = d
+            captured_pieces: List[Tuple[int, int]] = []
+            n: int = 1
+            while in_board((x + n * k, y + n * l)):
+                if n == 1 and self.grid[i + n * k][j + n * l] == self.turn:
+                    break
+                if self.grid[x + n * k][y + n * l] is None:
+                    break
+                if self.grid[x + n * k][y + n * l] == self.turn:
+                    for x, y in captured_pieces:
+                        self.grid[x][y] = self.turn
+                    break
+                captured_pieces.append((x + n * k, y + n * l))
+                n += 1
+            continue
+       
         self.num_moves += 1
+        next_player = self.turn
+        while self.available_moves == []:
+            self.num_moves += 1
+            if self.turn == next_player:
+                self._done = True
+                break
+
+
         
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
