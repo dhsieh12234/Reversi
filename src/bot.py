@@ -44,18 +44,18 @@ class ReversiBot:
         """
         if self.type == "optimizer":
             move = self.stub.choose_move()
-            # print (f"optimal move {move}")
-            print (f"player: {self.type}")
-            # print (f"new player: {self.type}")
+            # # print (f"optimal move {move}")
+            # print (f"player: {self.type}")
+            # # print (f"new player: {self.type}")
             return move
         if self.type == "random":
             moves = self.stub.available_moves
             if len(moves) == 0:
                 return None
             move = random.choices(moves)
-            # print (f"player: {self.type}")
-            print (f"random move {move}")
-            # print (f"new player: {self.type}")
+            # # print (f"player: {self.type}")
+            # # print (f"random move {move}")
+            # # print (f"new player: {self.type}")
             return move[0]
 
 
@@ -75,20 +75,20 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) ->
         player 2
     """
     while not (len(game.outcome) == 1 or len(game.outcome) == 2):
-        print ("\n")
-        print ("NEW TURN")
+        # # print ("\n")
+        # # print ("NEW TURN")
         if game.turn == 1:
-            print ("Hello")
+            # print ("Hello")
             move = player1.get_move()
-            print (f"player 1 move: {move}")
+            # print (f"player 1 move: {move}")
             if move is not None:
                 game.apply_move(move)
             else:
                 game.turn = 2
         elif game.turn == 2:
-            print ("Hello")
+            # print ("Hello")
             move = player2.get_move()
-            print (f"player 2 move: {move}")
+            # print (f"player 2 move: {move}")
             if move is not None:
                 game.apply_move(move)
             else:
@@ -110,7 +110,7 @@ def play_num_games(numgames: int) -> None:
         player1 = ReversiBot(1, board)
         player2 = ReversiBot(2, board)
         result = play_game(player1, player2, board)
-        print (result)
+        # print (result)
         if len (result) == 1:  
             if result[0] == 1:
                 player1_wins += 1

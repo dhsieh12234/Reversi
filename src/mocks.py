@@ -7,7 +7,7 @@ implement a ReversiMock implementation.
 from typing import List, Tuple, Optional
 from copy import deepcopy
 
-from reversi import ReversiBase, BoardGridType, ListMovesType
+from reversi import ReversiBase, BoardGridType, ListMovesType, Piece
 
 
 class ReversiStub(ReversiBase):
@@ -670,24 +670,26 @@ class ReversiBotMock(ReversiMock):
             captured_pieces: List[Tuple[int, int]] = []
             n: int = 1
             while in_board((x + n * k, y + n * l)):
-                if n == 1 and self.grid[x + n * k][y + n * l] == self.turn:
+                if n == 1 and self._grid[x + n * k][y + n * l] == self.turn:
                     break
-                if self.grid[x + n * k][y + n * l] is None:
+                if self._grid[x + n * k][y + n * l] is None:
                     break
-                if self.grid[x + n * k][y + n * l] == self.turn:
-                    # print (f"captured pieces: {captured_pieces}")
-                    # for a,b in captured_pieces:
-                    #     print (f"position: {a},{b}")
-                    #     self.grid[a][b] = self.turn
+                if self._grid[x + n * k][y + n * l] == self.turn:
+                    # # print (f"captured pieces: {captured_pieces}")
+                    for a,b in captured_pieces:
+                        # print (f"position: ({a},{b})")
+                        # print (f"turn is {self.turn}")
+                        self._grid[a][b] = self.turn
+                        # # print (f"changed positions: {self.grid[a][b]}")
                     break
                 captured_pieces.append((x + n * k, y + n * l))
                 n += 1
             continue
-        for a,b in captured_pieces:
-                print (f"position: {a},{b}")
-                self.grid[a][b] = self.turn
-        print (self.grid)
+        # print (self._grid)
 
+        # for a,b in captured_pieces:
+        #         # print (f"position: {a},{b}")
+        #         self.grid[a][b] = self.turn        
 
         self.num_moves += 1
         next_player = self.turn
@@ -696,9 +698,6 @@ class ReversiBotMock(ReversiMock):
             if self.turn == next_player:
                 self._done = True
                 break
-
-
-
 
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
@@ -767,7 +766,7 @@ class ReversiBotMock(ReversiMock):
         """
         sim_game: ReversiBotMock = deepcopy(self)
         sim_game.apply_move(moves)
-        # print (f"printed simulated game: {sim_game}")
+        # # print (f"# printed simulated game: {sim_game}")
         return sim_game
 
 
@@ -784,15 +783,17 @@ class ReversiBotMock(ReversiMock):
 
 
         moves = self.available_moves
-        print (f"avaliable moves: {moves}")
+        # print (f"avaliable moves: {moves}")
         optimal_move = moves[0]
-        print (f"mock optimal move: {optimal_move}")
+        # print (f"mock optimal move: {optimal_move}")
         num_square = 0
         for move in moves:
+            # print (f"tested move {move}")
             new_grid = self.simulate_moves(move)
             count = num_squares(new_grid)
-            # print (f"new grid: {new_grid}")
+            # print (f"new grid: {new_grid.grid}")
             if count > num_square:
+                # print (f"count: {count}")
                 optimal_move = move
                 num_square = count
         return optimal_move
