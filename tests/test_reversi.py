@@ -634,7 +634,7 @@ def test_simulate_moves_5():
     # Check that the original game state has been preserved
     assert game.grid == grid_orig
     assert game.turn == 1
-    assert set(game.available_moves) == legal
+    assert set(game.available_moves) == set(legal)
     assert not game.done
     assert game.outcome == []
 
