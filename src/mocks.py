@@ -126,7 +126,7 @@ class ReversiMock(ReversiBase):
         Raises:
             ValueError: If the parity of side and players is incorrect
         """
-        
+
         if players != 2:
             raise ValueError("There can only be 2 players.")
         if side < 4:
@@ -230,7 +230,7 @@ class ReversiMock(ReversiBase):
         if not self.done:
             return ret_lst
         else:
-            if self._grid[0][0] is not None: 
+            if self._grid[0][0] is not None:
                 ret_lst.append(self._grid[0][0])
             else:
                 count: int = 0
@@ -264,7 +264,7 @@ class ReversiMock(ReversiBase):
             raise ValueError("Specified position is outside the bounds.")
         return self._grid[x][y]
 
-    
+
     def legal_move(self, pos: Tuple[int, int]) -> bool:
         """
         Checks if a move is legal.
@@ -292,7 +292,7 @@ class ReversiMock(ReversiBase):
             return False
         if pos == (0, 0) or pos == (self._side - 1, self._side - 1):
             return True
-        
+
         directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                       (0, -1), (1, -1), (1, 0), (1, 1)]
 
@@ -302,7 +302,7 @@ class ReversiMock(ReversiBase):
                 if self.grid[i + k][j + l] is not None:
                     return True
         return False
-        
+
 
     def apply_move(self, pos: Tuple[int, int]) -> None:
         """
@@ -341,7 +341,7 @@ class ReversiMock(ReversiBase):
             raise ValueError("Specified position is outside the bounds.")
         self._grid[x][y] = self.turn
         self.num_moves += 1
-        
+
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
         """
@@ -367,7 +367,7 @@ class ReversiMock(ReversiBase):
         Returns: None
         """
         raise NotImplementedError
-    
+
     def simulate_moves(self,
                        moves: ListMovesType
                        ) -> "ReversiBase":
@@ -435,7 +435,7 @@ class ReversiBotMock(ReversiMock):
         Raises:
             ValueError: If the parity of side and players is incorrect
         """
-        
+
         if players != 2:
             raise ValueError("There can only be 2 players.")
         if side < 4:
@@ -526,7 +526,7 @@ class ReversiBotMock(ReversiMock):
             for square in row:
                 if square is None:
                     return False
-        return True 
+        return True
 
     @property
     def outcome(self) -> List[int]:
@@ -543,7 +543,7 @@ class ReversiBotMock(ReversiMock):
             return []
         else:
             player1 = 0
-            player2 = 0 
+            player2 = 0
             for row in self.grid:
                 for square in row:
                     if square == 1:
@@ -581,7 +581,7 @@ class ReversiBotMock(ReversiMock):
             raise ValueError("Specified position is outside the bounds.")
         return self._grid[x][y]
 
-    
+
     def legal_move(self, pos: Tuple[int, int]) -> bool:
         """
         Checks if a move is legal.
@@ -607,7 +607,7 @@ class ReversiBotMock(ReversiMock):
         i, j = pos
         if self.grid[i][j] is not None:
             return False
-        
+
         directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                       (0, -1), (1, -1), (1, 0), (1, 1)]
 
@@ -620,7 +620,7 @@ class ReversiBotMock(ReversiMock):
                 return True
         return False
 
-        
+
 
     def apply_move(self, pos: Tuple[int, int]) -> None:
         """
@@ -662,7 +662,7 @@ class ReversiBotMock(ReversiMock):
         if x >= self._side or x < 0 or y >= self._side or y < 0:
             raise ValueError("Specified position is outside the bounds.")
         self._grid[x][y] = self.turn
-        
+
         directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
 
         for d in directions:
@@ -683,7 +683,7 @@ class ReversiBotMock(ReversiMock):
             continue
         print (self.grid)
 
-       
+
         self.num_moves += 1
         next_player = self.turn
         while self.available_moves == []:
@@ -694,7 +694,7 @@ class ReversiBotMock(ReversiMock):
 
 
 
-        
+
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
         """
@@ -720,7 +720,7 @@ class ReversiBotMock(ReversiMock):
         Returns: None
         """
         raise NotImplementedError
-    
+
     def simulate_moves(self,
                        moves: ListMovesType
                        ) -> "ReversiBase":
@@ -766,7 +766,7 @@ class ReversiBotMock(ReversiMock):
         return sim_game
 
 
-    
+
     def choose_move(self):
 
         def num_squares(grid: ReversiBotMock):
@@ -791,5 +791,3 @@ class ReversiBotMock(ReversiMock):
                 optimal_move = move
                 num_square = count
         return optimal_move
-    
-

@@ -514,3 +514,4 @@ def test_simulate_moves_4():
     with pytest.raises(ValueError):
         reversi = ReversiMock(side=7, players=2, othello=True)
         future_reversi = reversi.simulate_moves([(8, 8)])
+
