@@ -615,6 +615,56 @@ def test_simulate_moves_4():
         reversi = Reversi(side=7, players=2, othello=True)
         future_reversi = reversi.simulate_moves([(8, 8)])
 
+def test_simulate_moves_5():
+    """
+    Test that calls multiple simulated moves
+    """
+    game = Reversi(side=8, players=2, othello=True)
+
+    grid_orig = game.grid
+
+    future_reversi = game.simulate_moves([(2, 3)])
+
+    legal = [
+        (3, 2),
+        (2, 3),
+        (4, 5),
+        (5, 4)
+    ]
+
+    # Check that the original game state has been preserved
+    assert game.grid == grid_orig
+    assert game.turn == 1
+    assert set(game.available_moves) == legal
+    assert not game.done
+    assert game.outcome == []
+
+    # Check that the returned object corresponds to the
+    # state after making the move.
+    legal = [
+        (3, 2),
+        (2, 4),
+        (4, 2)
+    ]
+    assert future_reversi.grid != grid_orig
+    assert future_reversi.turn == 2
+    assert set(future_reversi.available_moves) == legal
+    assert not future_reversi.done
+    assert future_reversi.outcome == []
+
+    final_reversi = future_reversi.simulate_moves((2, 2))
+    legal = [
+        (2, 1),
+        (3, 2),
+        (5, 4),
+        (4, 5)
+    ]
+
+    assert final_reversi.grid != future_reversi.grid
+    assert final_reversi.turn == 1
+    assert set(final_reversi.available_moves) == legal
+    assert not final_reversi.done
+    assert final_reversi.outcome == []
 
 
 
