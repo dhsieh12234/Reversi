@@ -577,7 +577,6 @@ class Reversi(ReversiBase):
                 if self.grid[i + n * k][j + n * l] is None:
                     break
                 if self.grid[i + n * k][j + n * l] == self.turn:
-                    print(captured_pieces)
                     for x, y in captured_pieces:
                         self._board.grid[x][y] = Piece(self.turn)
                     break
