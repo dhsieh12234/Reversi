@@ -7,7 +7,7 @@ import random
 import sys
 from typing import Union, Tuple, Optional 
 
-from mocks import ReversiStub
+from mocks import ReversiStub, ReversiBotMock
 
 #
 # BOTS
@@ -18,7 +18,7 @@ class ReversiBot:
     Gets a random for the bot to act upon
     """
 
-    def __init__(self, player: int, stub: ReversiStub) -> None:
+    def __init__(self, player: int, stub: ReversiBotMock) -> None:
         """
         Constructor
 
@@ -28,6 +28,10 @@ class ReversiBot:
         """
         self.player = player
         self.stub = stub
+        if self.player == 1:
+            self.type = "optimizer"
+        else:
+            self.type = "random"
     
     def get_move(self) -> Optional[Tuple[int,int]]:
         """
@@ -38,13 +42,25 @@ class ReversiBot:
             a desired move by the player, or None of there is not player
 
         """
-        moves = self.stub.available_moves
-        if len(moves) == 0:
-            return None
-        move = random.choices(moves)
-        return move[0]
+        if self.type == "optimizer":
+            move = self.stub.choose_move()
+            # print (f"optimal move {move}")
+            print (f"player: {self.type}")
+            # print (f"new player: {self.type}")
+            return move
+        if self.type == "random":
+            moves = self.stub.available_moves
+            if len(moves) == 0:
+                return None
+            move = random.choices(moves)
+            print (f"player: {self.type}")
+            # print (f"random move {move}")
+            # print (f"new player: {self.type}")
+            return move[0]
+
+
     
-def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiStub) -> list[int]:
+def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) -> list[int]:
     """
     Play one singular game of ReversiStub which ends when either 4 moves have
     been taken or a player hits (0,0)
@@ -59,18 +75,24 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiStub) -> li
         player 2
     """
     while not (len(game.outcome) == 1 or len(game.outcome) == 2):
+        print ("\n")
+        print ("NEW TURN")
         if game.turn == 1:
+            print ("Hello")
             move = player1.get_move()
+            print (f"player 1 move: {move}")
             if move is not None:
                 game.apply_move(move)
             else:
-                game._turn = 2
+                game.turn = 2
         elif game.turn == 2:
+            print ("Hello")
             move = player2.get_move()
+            print (f"player 2 move: {move}")
             if move is not None:
                 game.apply_move(move)
             else:
-                game._turn = 1
+                game.turn = 1
     return game.outcome 
     
 def play_num_games(numgames: int) -> None:
@@ -84,10 +106,11 @@ def play_num_games(numgames: int) -> None:
     player2_wins = 0
     draws = 0
     for i in range(numgames):
-        board = ReversiStub (8,2, False)
+        board = ReversiBotMock (8,2, False)
         player1 = ReversiBot(1, board)
         player2 = ReversiBot(2, board)
         result = play_game(player1, player2, board)
+        print (result)
         if result[0] == 1:
             player1_wins += 1
         if result[0] == 2:

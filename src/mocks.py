@@ -539,9 +539,8 @@ class ReversiBotMock(ReversiMock):
         the list will contain more than one integer (representing
         the players who tied)
         """
-        winner = []
         if not self.done:
-            return winner
+            return []
         else:
             player1 = 0
             player2 = 0 
@@ -552,11 +551,11 @@ class ReversiBotMock(ReversiMock):
                     if square == 2:
                         player2 += 1
             if player1 > player2:
-                winner.append(1)
+                return [1]
             if player2 < player1:
-                winner.append(2)
-            else:
-                winner + [1,2]
+                return [2]
+            if player1 == player2:
+                return [1,2]
 
     #
     # METHODS
@@ -671,7 +670,7 @@ class ReversiBotMock(ReversiMock):
             captured_pieces: List[Tuple[int, int]] = []
             n: int = 1
             while in_board((x + n * k, y + n * l)):
-                if n == 1 and self.grid[i + n * k][j + n * l] == self.turn:
+                if n == 1 and self.grid[x + n * k][y + n * l] == self.turn:
                     break
                 if self.grid[x + n * k][y + n * l] is None:
                     break
@@ -758,6 +757,36 @@ class ReversiBotMock(ReversiMock):
         the method was called on, reflecting the state
         of the game after applying the provided moves.
         """
-        sim_game: ReversiMock = deepcopy(self)
-        sim_game.apply_move(moves[0])
+        sim_game: ReversiBotMock = deepcopy(self)
+        sim_game.apply_move(moves)
+        # print (f"printed simulated game: {sim_game}")
         return sim_game
+
+
+    
+    def choose_move(self):
+
+        def num_squares(grid: ReversiBotMock):
+            count = 0
+            for row in grid.grid:
+                for square in row:
+                    if square == self.turn:
+                        count += 1
+            return count
+
+
+        moves = self.available_moves
+        print (f"avaliable moves: {moves}")
+        optimal_move = moves[0]
+        print (f"mock optimal move: {optimal_move}")
+        num_square = 0
+        for move in moves:
+            new_grid = self.simulate_moves(move)
+            # print (f"new grid: {new_grid}")
+            if num_squares(new_grid) > num_square:
+                print (num_square)
+                optimal_move = move
+                num_square = num_squares(new_grid)
+        return optimal_move
+    
+
