@@ -675,12 +675,17 @@ class ReversiBotMock(ReversiMock):
                 if self.grid[x + n * k][y + n * l] is None:
                     break
                 if self.grid[x + n * k][y + n * l] == self.turn:
-                    for a, b in captured_pieces:
-                        self.grid[a][b] = self.turn
+                    # print (f"captured pieces: {captured_pieces}")
+                    # for a,b in captured_pieces:
+                    #     print (f"position: {a},{b}")
+                    #     self.grid[a][b] = self.turn
                     break
                 captured_pieces.append((x + n * k, y + n * l))
                 n += 1
             continue
+        for a,b in captured_pieces:
+                print (f"position: {a},{b}")
+                self.grid[a][b] = self.turn
         print (self.grid)
 
 

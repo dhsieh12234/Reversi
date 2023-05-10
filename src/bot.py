@@ -111,10 +111,11 @@ def play_num_games(numgames: int) -> None:
         player2 = ReversiBot(2, board)
         result = play_game(player1, player2, board)
         print (result)
-        if result[0] == 1:
-            player1_wins += 1
-        if result[0] == 2:
-            player2_wins += 1
+        if len (result) == 1:  
+            if result[0] == 1:
+                player1_wins += 1
+            elif result[0] == 2:
+                player2_wins += 1
         if len(result) == 2:
             draws += 1
     player1_perc = round(((player1_wins / numgames)* 100),2)
