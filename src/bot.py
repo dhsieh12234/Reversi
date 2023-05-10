@@ -53,8 +53,8 @@ class ReversiBot:
             if len(moves) == 0:
                 return None
             move = random.choices(moves)
-            print (f"player: {self.type}")
-            # print (f"random move {move}")
+            # print (f"player: {self.type}")
+            print (f"random move {move}")
             # print (f"new player: {self.type}")
             return move[0]
 

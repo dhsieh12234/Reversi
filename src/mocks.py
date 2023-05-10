@@ -675,12 +675,14 @@ class ReversiBotMock(ReversiMock):
                 if self.grid[x + n * k][y + n * l] is None:
                     break
                 if self.grid[x + n * k][y + n * l] == self.turn:
-                    for x, y in captured_pieces:
-                        self.grid[x][y] = self.turn
+                    for a, b in captured_pieces:
+                        self.grid[a][b] = self.turn
                     break
                 captured_pieces.append((x + n * k, y + n * l))
                 n += 1
             continue
+        print (self.grid)
+
        
         self.num_moves += 1
         next_player = self.turn
@@ -689,6 +691,7 @@ class ReversiBotMock(ReversiMock):
             if self.turn == next_player:
                 self._done = True
                 break
+
 
 
         
@@ -782,11 +785,11 @@ class ReversiBotMock(ReversiMock):
         num_square = 0
         for move in moves:
             new_grid = self.simulate_moves(move)
+            count = num_squares(new_grid)
             # print (f"new grid: {new_grid}")
-            if num_squares(new_grid) > num_square:
-                print (num_square)
+            if count > num_square:
                 optimal_move = move
-                num_square = num_squares(new_grid)
+                num_square = count
         return optimal_move
     
 
