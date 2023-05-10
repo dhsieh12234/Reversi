@@ -528,7 +528,7 @@ def test_simulate_move_1():
     }
     assert future_reversi.grid != grid_orig
     assert future_reversi.turn == 2
-    assert set(future_reversi.available_moves) == legal
+    assert set(future_reversi.available_moves) == set(legal)
     assert not future_reversi.done
     assert future_reversi.outcome == []
 
@@ -555,7 +555,7 @@ def test_simulate_move_2():
     # Check that the original game state has been preserved
     assert game.grid == grid_ori
     assert game.turn == 1
-    assert set(game.available_moves) == legal
+    assert set(game.available_moves) == set(legal)
     assert not game.done
     assert game.outcome == []
 
@@ -591,7 +591,7 @@ def test_simulate_move_3():
     # Check that the original game state has been preserved
     assert game.grid == grid_orig
     assert game.turn == 2
-    assert set(game.available_moves) == legal
+    assert set(game.available_moves) == set(legal)
     assert not game.done
     assert game.outcome == []
 
@@ -647,7 +647,7 @@ def test_simulate_moves_5():
     }
     assert future_reversi.grid != grid_orig
     assert future_reversi.turn == 2
-    assert set(future_reversi.available_moves) == legal
+    assert set(future_reversi.available_moves) == set(legal)
     assert not future_reversi.done
     assert future_reversi.outcome == []
 
@@ -661,7 +661,7 @@ def test_simulate_moves_5():
 
     assert final_reversi.grid != future_reversi.grid
     assert final_reversi.turn == 1
-    assert set(final_reversi.available_moves) == legal
+    assert set(final_reversi.available_moves) == set(legal)
     assert not final_reversi.done
     assert final_reversi.outcome == []
 
