@@ -494,148 +494,126 @@ def test_skip_move():
     helper_apply_move(game, apply)
     assert game.turn == 2, "Turn skipping doesn't work"
 
-# def test_simulate_move_1():
-#     """
-#     Test simulating a move that doesn't end the game
-#     """
+def test_simulate_move_1():
+    """
+    Test simulating a move that doesn't end the game
+    """
 
-#     reversi = Reversi(side=8, players=2, othello=True)
+    game = Reversi(side=8, players=2, othello=True)
 
-#     grid_orig = reversi.grid
+    grid_orig = game.grid
 
-#     future_reversi = reversi.simulate_moves([(3, 5)])
+    future_reversi = game.simulate_moves([(3, 2)])
 
-#     legal = {
-#         (2, 2),
-#         (2, 3),
-#         (2, 4),
-#         (2, 5),
-#         (3, 2),
-#         (3, 5),
-#         (4, 2),
-#         (4, 5),
-#         (5, 2),
-#         (5, 3),
-#         (5, 4),
-#         (5, 5),
-#         (0, 0),
-#         (7, 7),
-#     }
+    legal = [
+        (3, 2),
+        (2, 3),
+        (4, 5),
+        (5, 4)
+    ]
 
-#     # Check that the original game state has been preserved
-#     assert reversi.grid == grid_orig
-#     assert reversi.turn == 1
-#     assert set(reversi.available_moves) == legal
-#     assert not reversi.done
-#     assert reversi.outcome == []
+    # Check that the original game state has been preserved
+    assert game.grid == grid_orig
+    assert game.turn == 1
+    assert set(game.available_moves) == legal
+    assert not game.done
+    assert game.outcome == []
 
-#     # Check that the returned object corresponds to the
-#     # state after making the move.
-#     legal.remove((3, 5))
-#     legal.update({(2, 6), (3, 6), (4, 6)})
-#     assert future_reversi.grid != grid_orig
-#     assert future_reversi.turn == 2
-#     assert set(future_reversi.available_moves) == legal
-#     assert not future_reversi.done
-#     assert future_reversi.outcome == []
+    # Check that the returned object corresponds to the
+    # state after making the move.
+    legal = [
+        (2, 2),
+        (2, 4),
+        (4, 2)
+    ]
+    assert future_reversi.grid != grid_orig
+    assert future_reversi.turn == 2
+    assert set(future_reversi.available_moves) == legal
+    assert not future_reversi.done
+    assert future_reversi.outcome == []
 
 
-# def test_simulate_move_2():
-#     """
-#     Test simulating a move that results in Player 1 winning
-#     """
+def test_simulate_move_2():
+    """
+    Test simulating a move that results in Player 1 winning
+    """
 
-#     reversi = ReversiMock(side=8, players=2, othello=True)
+    game = Reversi(side=8, players=2, othello=True)
 
-#     grid_orig = reversi.grid
+    win_game = [[1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [2, 1, 1, 2, 1, 2, 1, 1],
+                [1, 2, 1, 2, 1, 1, 1, 1],
+                [2, 1, 1, 1, 2, 2, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [2, 1, 1, 1, 1, 1, 1, 2],
+                [2, 2, 2, 2, 2, 2, 2, None]]
+    game.load_game(1, win_game)
+    grid_ori = game.grid
+    legal = [(7, 7)]
+    future_reversi = game.simulate_moves((7, 7))
+    # Check that the original game state has been preserved
+    assert game.grid == grid_ori
+    assert game.turn == 1
+    assert set(game.available_moves) == legal
+    assert not game.done
+    assert game.outcome == []
 
-#     future_reversi = reversi.simulate_moves([(0, 0)])
-
-#     legal = {
-#         (2, 2),
-#         (2, 3),
-#         (2, 4),
-#         (2, 5),
-#         (3, 2),
-#         (3, 5),
-#         (4, 2),
-#         (4, 5),
-#         (5, 2),
-#         (5, 3),
-#         (5, 4),
-#         (5, 5),
-#         (0, 0),
-#         (7, 7),
-#     }
-
-#     # Check that the original game state has been preserved
-#     assert reversi.grid == grid_orig
-#     assert reversi.turn == 1
-#     assert set(reversi.available_moves) == legal
-#     assert not reversi.done
-#     assert reversi.outcome == []
-
-#     # Check that the returned values correspond to the
-#     # state after making the move.
-#     assert future_reversi.grid != grid_orig
-#     assert future_reversi.done
-#     assert future_reversi.outcome == [1]
+    # Check that the returned values correspond to the
+    # state after making the move.
+    assert future_reversi.grid != grid_ori
+    assert future_reversi.done
+    assert future_reversi.outcome == [1]
 
 
-# def test_simulate_move_3():
-#     """
-#     Test simulating a move that results in a tie
-#     """
+def test_simulate_move_3():
+    """
+    Test simulating a move that results in a tie
+    """
 
-#     reversi = ReversiMock(side=8, players=2, othello=True)
+    game = Reversi(side=8, players=2, othello=True)
 
-#     grid_orig = reversi.grid
+    tie_game = [[1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1],
+                [2, 2, 2, 2, 2, 2, 2, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2],
+                [2, 2, 2, 2, 2, 2, 1, None]]
+    game.load_game(2, tie_game)
+    grid_orig = game.grid
+    future_reversi = game.simulate_moves([(7, 7)])
+    legal = [
+        (7, 7)
+    ]
 
-#     future_reversi = reversi.simulate_moves([(7, 7)])
+    # Check that the original game state has been preserved
+    assert game.grid == grid_orig
+    assert game.turn == 2
+    assert set(game.available_moves) == legal
+    assert not game.done
+    assert game.outcome == []
 
-#     legal = {
-#         (2, 2),
-#         (2, 3),
-#         (2, 4),
-#         (2, 5),
-#         (3, 2),
-#         (3, 5),
-#         (4, 2),
-#         (4, 5),
-#         (5, 2),
-#         (5, 3),
-#         (5, 4),
-#         (5, 5),
-#         (0, 0),
-#         (7, 7),
-#     }
-
-#     # Check that the original game state has been preserved
-#     assert reversi.grid == grid_orig
-#     assert reversi.turn == 1
-#     assert set(reversi.available_moves) == legal
-#     assert not reversi.done
-#     assert reversi.outcome == []
-
-#     # Check that the returned values correspond to the
-#     # state after making the move.
-#     assert future_reversi.grid != grid_orig
-#     assert future_reversi.done
-#     assert sorted(future_reversi.outcome) == [1, 2]
+    # Check that the returned values correspond to the
+    # state after making the move.
+    assert future_reversi.grid != grid_orig
+    assert future_reversi.done
+    assert sorted(future_reversi.outcome) == [1, 2]
 
 
-# def test_simulate_moves_4():
-#     """
-#     Test that calling simulate_moves with an invalid position
-#     raises a ValueError exception.
-#     """
-#     with pytest.raises(ValueError):
-#         reversi = ReversiMock(side=7, players=2, othello=True)
-#         future_reversi = reversi.simulate_moves([(-1, -1)])
+def test_simulate_moves_4():
+    """
+    Test that calling simulate_moves with an invalid position
+    raises a ValueError exception.
+    """
+    with pytest.raises(ValueError):
+        reversi = Reversi(side=7, players=2, othello=True)
+        future_reversi = reversi.simulate_moves([(-1, -1)])
 
-#     with pytest.raises(ValueError):
-#         reversi = ReversiMock(side=7, players=2, othello=True)
-#         future_reversi = reversi.simulate_moves([(8, 8)])
+    with pytest.raises(ValueError):
+        reversi = Reversi(side=7, players=2, othello=True)
+        future_reversi = reversi.simulate_moves([(8, 8)])
 
 
 
