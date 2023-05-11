@@ -629,7 +629,7 @@ def test_simulate_moves_5():
     assert not future_reversi.done
     assert future_reversi.outcome == []
 
-    final_reversi = future_reversi.simulate_moves((2, 2))
+    final_reversi = future_reversi.simulate_moves([(2, 2)])
     legal = [
         (2, 1),
         (3, 2),
