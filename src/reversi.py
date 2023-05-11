@@ -587,7 +587,7 @@ class Reversi(ReversiBase):
             for d in directions:
                 k, l = d
                 captured_pieces: List[Tuple[int, int]] = []
-                n: int = 1
+                n = 1
                 while self._board.in_board((i + n * k, j + n * l)):
                     if n == 1 and self.grid[i + n * k][j + n * l] == self.turn:
                         break
