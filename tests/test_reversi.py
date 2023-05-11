@@ -341,7 +341,7 @@ def test_not_othello2():
         (3, 6),
         (4, 6),
         (5, 6),
-        (6, 6)
+        (6, 6),
     ]
     helper_avalible_legal(game, legal)
 
@@ -409,7 +409,7 @@ def test_load_game_errors1():
         game = Reversi(side=8, players=2, othello=True)
         game.apply_move((3, 5))
         curr = game.grid
-        game.load_game(1, curr)
+        game.load_game(4, curr)
 
 def test_load_game_errors2():
     """
@@ -602,12 +602,12 @@ def test_simulate_moves_5():
     grid_orig = game.grid
 
     future_reversi = game.simulate_moves([(2, 3)])
-    legal = {
+    legal = [
         (3, 2),
         (2, 3),
         (4, 5),
         (5, 4)
-    }
+    ]
 
     # Check that the original game state has been preserved
     assert game.grid == grid_orig
@@ -618,11 +618,11 @@ def test_simulate_moves_5():
 
     # Check that the returned object corresponds to the
     # state after making the move.
-    legal = {
-        (3, 2),
+    legal = [
         (2, 4),
-        (4, 2)
-    }
+        (4, 2),
+        (2, 2)
+    ]
     assert future_reversi.grid != grid_orig
     assert future_reversi.turn == 2
     assert set(future_reversi.available_moves) == set(legal)
@@ -630,12 +630,12 @@ def test_simulate_moves_5():
     assert future_reversi.outcome == []
 
     final_reversi = future_reversi.simulate_moves((2, 2))
-    legal = {
+    legal = [
         (2, 1),
         (3, 2),
         (5, 4),
         (4, 5)
-    }
+    ]
 
     assert final_reversi.grid != future_reversi.grid
     assert final_reversi.turn == 1

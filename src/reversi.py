@@ -242,7 +242,7 @@ class ReversiBase(ABC):
         of the game after applying the provided moves.
         """
         raise NotImplementedError
-    
+
 class Piece:
     """
     Class to represent pieces.
@@ -276,7 +276,7 @@ class Board:
                 if square is not None:
                     self.grid[i][j] = Piece(square)
 
-    
+
     def in_board(self, pos: Tuple[int, int]) -> bool:
         """
         Returns whether pos is in the board or not.
@@ -521,7 +521,7 @@ class Reversi(ReversiBase):
                 prelim = prelim or (self._board.grid[x][y] is None)
         if prelim:
             return (i in inner_square_indices) and (j in inner_square_indices)
-        
+
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                (0, -1), (1, -1), (1, 0), (1, 1)]
@@ -571,7 +571,7 @@ class Reversi(ReversiBase):
                              "of the board.")
         i, j = pos
         self._board.grid[i][j] = Piece(self.turn)
-        
+
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                (0, -1), (1, -1), (1, 0), (1, 1)]
@@ -600,7 +600,7 @@ class Reversi(ReversiBase):
             if self.turn == next_player:
                 self._done = True
                 break
-        
+
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
         """
@@ -625,6 +625,7 @@ class Reversi(ReversiBase):
         if turn < 1 or turn > self._players:
             raise ValueError("The value of turn is inconsistent with the " +
                              "number of players.")
+
         if len(grid) != self._side:
             raise ValueError("The size of the grid is inconsistent with the " +
                              "size property.")
@@ -691,6 +692,6 @@ class Reversi(ReversiBase):
                 raise ValueError("All moves must be on the board.")
             sim_game.apply_move(move)
         return sim_game
-    
+
     def __str__(self):
         return str(self._board)
