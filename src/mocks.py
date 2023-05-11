@@ -421,6 +421,7 @@ class ReversiBotMock(ReversiMock):
     _othello: bool
     _grid: BoardGridType
     num_moves: int
+    captured_pieces: list[Tuple[int,int]]
 
     def __init__(self, side: int, players: int, othello: bool):
         """
@@ -453,6 +454,7 @@ class ReversiBotMock(ReversiMock):
             self._grid[side // 2 - 1][side // 2 - 1] = 2
             self._grid[side // 2][side // 2] = 2
         self.num_moves = 0
+        self.captured_pieces = []
 
     #
     # PROPERTIES
@@ -551,10 +553,13 @@ class ReversiBotMock(ReversiMock):
                     if square == 2:
                         player2 += 1
             if player1 > player2:
+                # print (f"player 1: {player1}, player 2: {player2}")
                 return [1]
-            if player2 < player1:
+            elif player1 < player2:
+                # print (f"player 1: {player1}, player 2: {player2}")
                 return [2]
-            if player1 == player2:
+            else:
+                # print (f"player 1: {player1}, player 2: {player2}")
                 return [1,2]
 
     #
@@ -766,8 +771,9 @@ class ReversiBotMock(ReversiMock):
         """
         sim_game: ReversiBotMock = deepcopy(self)
         sim_game.apply_move(moves)
-        # # print (f"# printed simulated game: {sim_game}")
+        # print (f"printed simulated game: {sim_game}")
         return sim_game
+        # new_grid: ReversiBotMock = self.apply_move(moves)
 
 
 
@@ -781,19 +787,45 @@ class ReversiBotMock(ReversiMock):
                         count += 1
             return count
 
+        def in_board(pos: Tuple[int, int]) -> bool:
+            i, j = pos
+            return ((i >= 0) and (i < self._side)\
+                         and (j >= 0) and (j < self._side))
 
         moves = self.available_moves
         # print (f"avaliable moves: {moves}")
         optimal_move = moves[0]
         # print (f"mock optimal move: {optimal_move}")
-        num_square = 0
+        max_captured_pieces = 0
         for move in moves:
             # print (f"tested move {move}")
-            new_grid = self.simulate_moves(move)
-            count = num_squares(new_grid)
+            # new_grid = self.simulate_moves(move)
+            # count = num_squares(new_grid)
+            # print (f"captured pieces: {self.captured_pieces}")
             # print (f"new grid: {new_grid.grid}")
-            if count > num_square:
-                # print (f"count: {count}")
+            # if count > num_square:
+            #     optimal_move = move
+            #     num_square = count
+            # self.captured_pieces = []
+            x,y = move
+            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
+            cur_captured_pieces_count = 0
+            for d in directions:
+                k,l = d
+                captured_pieces: List[Tuple[int, int]] = []
+                n: int = 1
+                while in_board((x + n * k, y + n * l)):
+                    if n == 1 and self._grid[x + n * k][y + n * l] == self.turn:
+                        break
+                    if self._grid[x + n * k][y + n * l] is None:
+                        break
+                    if self._grid[x + n * k][y + n * l] == self.turn:
+                        cur_captured_pieces_count += len(captured_pieces)
+                        break
+                    captured_pieces.append((x + n * k, y + n * l))
+                    n += 1
+                continue
+            if cur_captured_pieces_count > max_captured_pieces:
+                max_captured_pieces = cur_captured_pieces_count
                 optimal_move = move
-                num_square = count
         return optimal_move

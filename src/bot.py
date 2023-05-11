@@ -6,6 +6,8 @@ Bots for Reversi
 import random
 import sys
 from typing import Union, Tuple, Optional 
+import time
+
 
 from mocks import ReversiStub, ReversiBotMock
 
@@ -29,9 +31,9 @@ class ReversiBot:
         self.player = player
         self.stub = stub
         if self.player == 1:
-            self.type = "optimizer"
-        else:
             self.type = "random"
+        else:
+            self.type = "optimizer"
     
     def get_move(self) -> Optional[Tuple[int,int]]:
         """
@@ -42,21 +44,22 @@ class ReversiBot:
             a desired move by the player, or None of there is not player
 
         """
-        if self.type == "optimizer":
-            move = self.stub.choose_move()
-            # # print (f"optimal move {move}")
-            # print (f"player: {self.type}")
-            # # print (f"new player: {self.type}")
-            return move
         if self.type == "random":
             moves = self.stub.available_moves
             if len(moves) == 0:
                 return None
             move = random.choices(moves)
-            # # print (f"player: {self.type}")
-            # # print (f"random move {move}")
-            # # print (f"new player: {self.type}")
+            # print (f"player: {self.type}")
+            # print (f"random move {move}")
+            # # # print (f"new player: {self.type}")
             return move[0]
+        elif self.type == "optimizer":
+            move = self.stub.choose_move()
+            # print (f"player: {self.type}")
+            # print (f"optimal move {move}")
+            # # # print (f"new player: {self.type}")
+            return move
+
 
 
     
@@ -74,9 +77,10 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) ->
         the outcome of game, whether it was a draw, win by player1 or win by
         player 2
     """
+    
     while not (len(game.outcome) == 1 or len(game.outcome) == 2):
-        # # print ("\n")
-        # # print ("NEW TURN")
+        # print ("\n")
+        # print ("NEW TURN")
         if game.turn == 1:
             # print ("Hello")
             move = player1.get_move()
@@ -110,7 +114,7 @@ def play_num_games(numgames: int) -> None:
         player1 = ReversiBot(1, board)
         player2 = ReversiBot(2, board)
         result = play_game(player1, player2, board)
-        # print (result)
+        # # print (result)
         if len (result) == 1:  
             if result[0] == 1:
                 player1_wins += 1
@@ -128,7 +132,11 @@ def play_num_games(numgames: int) -> None:
 
 
 def main():
+    startTime = time.time()
     numgame = int(sys.argv[1])
     play_num_games(numgame)
+    endTime = time.time()
+    elapsedTime = endTime - startTime
+    print(f'time={elapsedTime:6.3f}')
 
 main()
