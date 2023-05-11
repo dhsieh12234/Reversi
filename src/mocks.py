@@ -552,15 +552,13 @@ class ReversiBotMock(ReversiMock):
                         player1 += 1
                     if square == 2:
                         player2 += 1
-            if player1 > player2:
-                # print (f"player 1: {player1}, player 2: {player2}")
-                return [1]
-            elif player1 < player2:
-                # print (f"player 1: {player1}, player 2: {player2}")
-                return [2]
-            else:
-                # print (f"player 1: {player1}, player 2: {player2}")
-                return [1,2]
+        # print (f"player 1: {player1}, player 2: {player2}")
+        if player1 > player2:
+            return [1]
+        elif player1 < player2:
+            return [2]
+        elif player1 == player2:
+            return [1,2]
 
     #
     # METHODS
@@ -771,23 +769,33 @@ class ReversiBotMock(ReversiMock):
         """
         sim_game: ReversiBotMock = deepcopy(self)
         sim_game.apply_move(moves)
-        # print (f"printed simulated game: {sim_game}")
+        # print (f"printed simulated game: {sim_game.grid}")
         return sim_game
         # new_grid: ReversiBotMock = self.apply_move(moves)
 
 
 
-    def choose_move(self):
+    def choose_move(self) -> Tuple[int,int]:
+        """
+        Chooses the move that gives the player the most amount of 
+        sqaures it can capture
 
-        def num_squares(grid: ReversiBotMock):
-            count = 0
-            for row in grid.grid:
-                for square in row:
-                    if square == self.turn:
-                        count += 1
-            return count
+        Inputs:
+            Nothing
+        
+        Returns: the optimal move for a player at a specific turn
 
+        """
         def in_board(pos: Tuple[int, int]) -> bool:
+            """
+            Checks whether a move can be placed onto the board
+
+            Inputs:
+                pos: the position of a piece
+            
+            Returns: True, if the piece is in the board.
+                False, if the piece is outside the board
+            """
             i, j = pos
             return ((i >= 0) and (i < self._side)\
                          and (j >= 0) and (j < self._side))
@@ -798,18 +806,10 @@ class ReversiBotMock(ReversiMock):
         # print (f"mock optimal move: {optimal_move}")
         max_captured_pieces = 0
         for move in moves:
-            # print (f"tested move {move}")
-            # new_grid = self.simulate_moves(move)
-            # count = num_squares(new_grid)
-            # print (f"captured pieces: {self.captured_pieces}")
-            # print (f"new grid: {new_grid.grid}")
-            # if count > num_square:
-            #     optimal_move = move
-            #     num_square = count
-            # self.captured_pieces = []
             x,y = move
-            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
+            # print (f"tested move {move}")
             cur_captured_pieces_count = 0
+            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
             for d in directions:
                 k,l = d
                 captured_pieces: List[Tuple[int, int]] = []
@@ -820,12 +820,15 @@ class ReversiBotMock(ReversiMock):
                     if self._grid[x + n * k][y + n * l] is None:
                         break
                     if self._grid[x + n * k][y + n * l] == self.turn:
+                        # print (f"captured pieces in 1 direction: {len(captured_pieces)}")
                         cur_captured_pieces_count += len(captured_pieces)
                         break
                     captured_pieces.append((x + n * k, y + n * l))
                     n += 1
                 continue
+            # print (f"how many captured: {cur_captured_pieces_count}")
             if cur_captured_pieces_count > max_captured_pieces:
                 max_captured_pieces = cur_captured_pieces_count
                 optimal_move = move
+        self.simulate_moves(optimal_move)
         return optimal_move
