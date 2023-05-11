@@ -48,17 +48,16 @@ class ReversiBot:
             moves = self.stub.available_moves
             if len(moves) == 0:
                 return None
-            move = random.choices(moves)
+            move = random.choices(moves)[0]
             # print (f"player: {self.type}")
             # print (f"random move {move}")
             # # # print (f"new player: {self.type}")
-            return move[0]
         elif self.type == "optimizer":
             move = self.stub.choose_move()
             # print (f"player: {self.type}")
             # print (f"optimal move {move}")
             # # # print (f"new player: {self.type}")
-            return move
+        return move
 
 
 
@@ -87,16 +86,12 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) ->
             # print (f"player 1 move: {move}")
             if move is not None:
                 game.apply_move(move)
-            else:
-                game.turn = 2
         elif game.turn == 2:
             # print ("Hello")
             move = player2.get_move()
             # print (f"player 2 move: {move}")
             if move is not None:
                 game.apply_move(move)
-            else:
-                game.turn = 1
     return game.outcome 
     
 def play_num_games(numgames: int) -> None:
@@ -110,7 +105,7 @@ def play_num_games(numgames: int) -> None:
     player2_wins = 0
     draws = 0
     for i in range(numgames):
-        board = ReversiBotMock (8,2, False)
+        board = ReversiBotMock (8,2, True)
         player1 = ReversiBot(1, board)
         player2 = ReversiBot(2, board)
         result = play_game(player1, player2, board)

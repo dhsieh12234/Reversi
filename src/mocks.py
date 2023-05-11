@@ -202,7 +202,7 @@ class ReversiMock(ReversiBase):
             return [(-1, -1)]
         else:
             avail_moves: List = []
-            for x, j in enumerate(self.grid):
+            for x, j in enumerate(self._grid):
                 for y, k in enumerate(j):
                     if self.legal_move((x, y)):
                         avail_moves.append((x, y))
@@ -288,7 +288,7 @@ class ReversiMock(ReversiBase):
             raise ValueError("The specified position is outside the bounds \
                              of the board.")
         i, j = pos
-        if self.grid[i][j] is not None:
+        if self._grid[i][j] is not None:
             return False
         if pos == (0, 0) or pos == (self._side - 1, self._side - 1):
             return True
@@ -299,7 +299,7 @@ class ReversiMock(ReversiBase):
         for d in directions:
             k, l = d
             if in_board((i + k, j + l)):
-                if self.grid[i + k][j + l] is not None:
+                if self._grid[i + k][j + l] is not None:
                     return True
         return False
 
@@ -513,7 +513,7 @@ class ReversiBotMock(ReversiMock):
             return [(-1, -1)]
         else:
             avail_moves: List = []
-            for x, j in enumerate(self.grid):
+            for x, j in enumerate(self._grid):
                 for y, k in enumerate(j):
                     if self.legal_move((x, y)):
                         avail_moves.append((x, y))
@@ -524,7 +524,7 @@ class ReversiBotMock(ReversiMock):
         """
         Returns True if the game is over, False otherwise.
         """
-        for row in self.grid:
+        for row in self._grid:
             for square in row:
                 if square is None:
                     return False
@@ -541,8 +541,9 @@ class ReversiBotMock(ReversiMock):
         the list will contain more than one integer (representing
         the players who tied)
         """
+        winners: list[int] = []
         if not self.done:
-            return []
+            return winners
         else:
             player1 = 0
             player2 = 0
@@ -552,14 +553,14 @@ class ReversiBotMock(ReversiMock):
                         player1 += 1
                     if square == 2:
                         player2 += 1
-        # print (f"player 1: {player1}, player 2: {player2}")
+        print (f"player 1: {player1}, player 2: {player2}")
         if player1 > player2:
-            return [1]
+            winners.append(1)
         elif player1 < player2:
-            return [2]
+            winners.append(2)
         elif player1 == player2:
-            return [1,2]
-
+            winners += [1,2]
+        return winners
     #
     # METHODS
     #
@@ -608,7 +609,7 @@ class ReversiBotMock(ReversiMock):
             raise ValueError("The specified position is outside the bounds \
                              of the board.")
         i, j = pos
-        if self.grid[i][j] is not None:
+        if self._grid[i][j] is not None:
             return False
 
         directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
@@ -617,10 +618,8 @@ class ReversiBotMock(ReversiMock):
         for d in directions:
             k, l = d
             if in_board((i + k, j + l)):
-                if self.grid[i + k][j + l] is not None:
+                if self._grid[i + k][j + l] is not None:
                     return True
-            if pos == (0, 0) or pos == (self._side - 1, self._side - 1):
-                return True
         return False
 
 
@@ -666,7 +665,8 @@ class ReversiBotMock(ReversiMock):
             raise ValueError("Specified position is outside the bounds.")
         self._grid[x][y] = self.turn
 
-        directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
+        directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
+            (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
 
         for d in directions:
             k,l = d
@@ -688,11 +688,7 @@ class ReversiBotMock(ReversiMock):
                 captured_pieces.append((x + n * k, y + n * l))
                 n += 1
             continue
-        # print (self._grid)
-
-        # for a,b in captured_pieces:
-        #         # print (f"position: {a},{b}")
-        #         self.grid[a][b] = self.turn        
+        # print (self._grid)  
 
         self.num_moves += 1
         next_player = self.turn
@@ -768,7 +764,7 @@ class ReversiBotMock(ReversiMock):
         of the game after applying the provided moves.
         """
         sim_game: ReversiBotMock = deepcopy(self)
-        sim_game.apply_move(moves)
+        sim_game.apply_move(moves[0])
         # print (f"printed simulated game: {sim_game.grid}")
         return sim_game
         # new_grid: ReversiBotMock = self.apply_move(moves)
@@ -777,8 +773,8 @@ class ReversiBotMock(ReversiMock):
 
     def choose_move(self) -> Tuple[int,int]:
         """
-        Chooses the move that gives the player the most amount of 
-        sqaures it can capture
+        Chooses the move from a list of avaliable moves that gives the player 
+        the most amount of sqaures it can capture
 
         Inputs:
             Nothing
@@ -809,7 +805,8 @@ class ReversiBotMock(ReversiMock):
             x,y = move
             # print (f"tested move {move}")
             cur_captured_pieces_count = 0
-            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
+            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
+                (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
             for d in directions:
                 k,l = d
                 captured_pieces: List[Tuple[int, int]] = []
@@ -830,5 +827,41 @@ class ReversiBotMock(ReversiMock):
             if cur_captured_pieces_count > max_captured_pieces:
                 max_captured_pieces = cur_captured_pieces_count
                 optimal_move = move
-        self.simulate_moves(optimal_move)
+        return optimal_move
+
+    """
+    Below is another implementation of the code which instead of taking
+    into account the amount of captured pieces per turn to choose which move is
+    ideal, I ran a simulation on every avaliablemove and counted the total 
+    number  of pieces on the board to determine which one to use. Since, this 
+    one uses simuation, a deepcopy is made every move that is checked thus 
+    being slower. Both methods when tested 250 times grants around a winrate of 
+    90% by the smart bot If possible, I would love some feedback on which 
+    approach to further develop on for the next task
+    """
+    def choose_move_v2(self):
+
+        def num_squares(grid: ReversiBotMock):
+            count = 0
+            for row in grid.grid:
+                for square in row:
+                    if square == self.turn:
+                        count += 1
+            return count
+
+
+        moves = self.available_moves
+        # print (f"avaliable moves: {moves}")
+        optimal_move = moves[0]
+        # print (f"mock optimal move: {optimal_move}")
+        num_square = 0
+        for move in moves:
+            # print (f"tested move {move}")
+            new_grid = self.simulate_moves([move])
+            count = num_squares(new_grid)
+            # print (f"new grid: {new_grid.grid}")
+            if count > num_square:
+                # print (f"count: {count}")
+                optimal_move = move
+                num_square = count
         return optimal_move
