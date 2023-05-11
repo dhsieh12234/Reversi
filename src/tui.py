@@ -25,6 +25,6 @@ while not game.done:
         except:
             continue
     game.apply_move(move)
-    if game.done:
-        winners: str = ", ".join([str(val) for val in game.outcome])
-        print("The game is done. The winners are players " + winners + ".")
+print(game)
+winners: str = ", ".join([str(val) for val in game.outcome])
+print("The game is done. The winners are players " + winners + ".")
