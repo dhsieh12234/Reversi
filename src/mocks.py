@@ -553,7 +553,6 @@ class ReversiBotMock(ReversiMock):
                         player1 += 1
                     if square == 2:
                         player2 += 1
-        print (f"player 1: {player1}, player 2: {player2}")
         if player1 > player2:
             winners.append(1)
         elif player1 < player2:
@@ -612,8 +611,8 @@ class ReversiBotMock(ReversiMock):
         if self._grid[i][j] is not None:
             return False
 
-        directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
-                      (0, -1), (1, -1), (1, 0), (1, 1)]
+        directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
+            (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
 
         for d in directions:
             k, l = d
@@ -678,17 +677,12 @@ class ReversiBotMock(ReversiMock):
                 if self._grid[x + n * k][y + n * l] is None:
                     break
                 if self._grid[x + n * k][y + n * l] == self.turn:
-                    # # print (f"captured pieces: {captured_pieces}")
                     for a,b in captured_pieces:
-                        # print (f"position: ({a},{b})")
-                        # print (f"turn is {self.turn}")
                         self._grid[a][b] = self.turn
-                        # # print (f"changed positions: {self.grid[a][b]}")
                     break
                 captured_pieces.append((x + n * k, y + n * l))
                 n += 1
             continue
-        # print (self._grid)  
 
         self.num_moves += 1
         next_player = self.turn
@@ -765,9 +759,7 @@ class ReversiBotMock(ReversiMock):
         """
         sim_game: ReversiBotMock = deepcopy(self)
         sim_game.apply_move(moves[0])
-        # print (f"printed simulated game: {sim_game.grid}")
         return sim_game
-        # new_grid: ReversiBotMock = self.apply_move(moves)
 
 
 
@@ -797,13 +789,10 @@ class ReversiBotMock(ReversiMock):
                          and (j >= 0) and (j < self._side))
 
         moves = self.available_moves
-        # print (f"avaliable moves: {moves}")
         optimal_move = moves[0]
-        # print (f"mock optimal move: {optimal_move}")
         max_captured_pieces = 0
         for move in moves:
             x,y = move
-            # print (f"tested move {move}")
             cur_captured_pieces_count = 0
             directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
                 (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
@@ -817,13 +806,11 @@ class ReversiBotMock(ReversiMock):
                     if self._grid[x + n * k][y + n * l] is None:
                         break
                     if self._grid[x + n * k][y + n * l] == self.turn:
-                        # print (f"captured pieces in 1 direction: {len(captured_pieces)}")
                         cur_captured_pieces_count += len(captured_pieces)
                         break
                     captured_pieces.append((x + n * k, y + n * l))
                     n += 1
                 continue
-            # print (f"how many captured: {cur_captured_pieces_count}")
             if cur_captured_pieces_count > max_captured_pieces:
                 max_captured_pieces = cur_captured_pieces_count
                 optimal_move = move
@@ -840,8 +827,27 @@ class ReversiBotMock(ReversiMock):
     approach to further develop on for the next task
     """
     def choose_move_v2(self):
+        """
+        Chooses a move from a list of avaliable moves based on the number of 
+        tiles is on the board after the move is made
 
-        def num_squares(grid: ReversiBotMock):
+        Inputs:
+            Nothing
+        
+        Returns: the optimal move for the player, meaning that the move
+            allows the player to have the most squares possible on the board
+        """
+
+        def num_squares(grid: ReversiBotMock) -> int:
+            """
+            Checks to see how many pieces a specific players has on the
+            board
+
+            Inputs:
+                grid: the current grid after making the move
+            
+            Returns: the number of pieces a player has
+            """
             count = 0
             for row in grid.grid:
                 for square in row:
@@ -849,19 +855,13 @@ class ReversiBotMock(ReversiMock):
                         count += 1
             return count
 
-
         moves = self.available_moves
-        # print (f"avaliable moves: {moves}")
         optimal_move = moves[0]
-        # print (f"mock optimal move: {optimal_move}")
         num_square = 0
         for move in moves:
-            # print (f"tested move {move}")
             new_grid = self.simulate_moves([move])
             count = num_squares(new_grid)
-            # print (f"new grid: {new_grid.grid}")
             if count > num_square:
-                # print (f"count: {count}")
                 optimal_move = move
                 num_square = count
         return optimal_move

@@ -528,15 +528,15 @@ class Reversi(ReversiBase):
 
         for d in directions:
             k, l = d
-            n: int = 1
-            while self._board.in_board((i + n * k, j + n * l)):
-                if n == 1 and self.grid[i + n * k][j + n * l] == self.turn:
+            m: int = 1
+            while self._board.in_board((i + m * k, j + m * l)):
+                if m == 1 and self.grid[i + m * k][j + m * l] == self.turn:
                     break
-                if self.grid[i + n * k][j + n * l] is None:
+                if self.grid[i + m * k][j + m * l] is None:
                     break
-                if self.grid[i + n * k][j + n * l] == self.turn:
+                if self.grid[i + m * k][j + m * l] == self.turn:
                     return True
-                n += 1
+                m += 1
             continue
         return False
 

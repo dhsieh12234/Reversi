@@ -49,20 +49,15 @@ class ReversiBot:
             if len(moves) == 0:
                 return None
             move = random.choices(moves)[0]
-            # print (f"player: {self.type}")
-            # print (f"random move {move}")
-            # # # print (f"new player: {self.type}")
         elif self.type == "optimizer":
             move = self.stub.choose_move()
-            # print (f"player: {self.type}")
-            # print (f"optimal move {move}")
-            # # # print (f"new player: {self.type}")
         return move
 
 
 
     
-def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) -> list[int]:
+def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) \
+                                                            -> list[int]:
     """
     Play one singular game of ReversiStub which ends when either 4 moves have
     been taken or a player hits (0,0)
@@ -78,18 +73,12 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) ->
     """
 
     while not (len(game.outcome) == 1 or len(game.outcome) == 2):
-        # print ("\n")
-        # print ("NEW TURN")
         if game.turn == 1:
-            # print ("Hello")
             move = player1.get_move()
-            # print (f"player 1 move: {move}")
             if move is not None:
                 game.apply_move(move)
         elif game.turn == 2:
-            # print ("Hello")
             move = player2.get_move()
-            # print (f"player 2 move: {move}")
             if move is not None:
                 game.apply_move(move)
     return game.outcome 
@@ -109,7 +98,6 @@ def play_num_games(numgames: int) -> None:
         player1 = ReversiBot(1, board)
         player2 = ReversiBot(2, board)
         result = play_game(player1, player2, board)
-        # # print (result)
         if len (result) == 1:  
             if result[0] == 1:
                 player1_wins += 1
@@ -119,7 +107,7 @@ def play_num_games(numgames: int) -> None:
             draws += 1
     player1_perc = round(((player1_wins / numgames)* 100),2)
     player2_perc = round(((player2_wins / numgames)* 100),2)
-    draw_perc = round(((draws / numgames) * 100),2)
+    draw_perc = round(((draws / numgames) * 100),3)
 
     print (f"Player 1 wins: {player1_perc}%")
     print (f"Player 2 wins: {player2_perc}%")
@@ -127,11 +115,7 @@ def play_num_games(numgames: int) -> None:
 
 
 def main():
-    startTime = time.time()
     numgame = int(sys.argv[1])
     play_num_games(numgame)
-    endTime = time.time()
-    elapsedTime = endTime - startTime
-    print(f'time={elapsedTime:6.3f}')
 
 main()
