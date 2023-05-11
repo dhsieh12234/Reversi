@@ -27,4 +27,8 @@ while not game.done:
     game.apply_move(move)
 print(game)
 winners: str = ", ".join([str(val) for val in game.outcome])
-print("The game is done. The winners are players " + winners + ".")
+print("The game is done.")
+if len(winners) == 1:
+    print("Player " + winners + " wins.")
+else:
+    print("Players " + winners + " win.")
