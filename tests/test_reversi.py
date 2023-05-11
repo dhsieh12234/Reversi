@@ -7,7 +7,7 @@ def helper_avalible_legal(game: Reversi, moves: list[tuple[int, int]]):
     a helper that runs a loop to check methods: legal_at, available_moves
     """
     assert len(moves) == len(game.available_moves), f"wrong number of moves"
-    res = [*set(game.avalible_moves)]
+    res = [*set(game.available_moves)]
     assert len(moves) == len(res), "no duplicates"
     for vals in game.available_moves:
         assert game.legal_move(vals) == True
@@ -319,7 +319,7 @@ def test_not_othello1():
         (4, 3)
     ]
     assert len(game.available_moves) == len(legal), "wrong number of legal moves"
-    for vals in game.available_moves():
+    for vals in game.available_moves:
         assert game.legal_move(vals) == True
         assert vals in legal, f"[{vals}] is not a legal move"
     res = [*set(game.available_moves)]
@@ -515,7 +515,7 @@ def test_simulate_move_1():
     # Check that the original game state has been preserved
     assert game.grid == grid_orig
     assert game.turn == 1
-    assert set(game.available_moves) == legal
+    assert set(game.available_moves) == set(legal)
     assert not game.done
     assert game.outcome == []
 
@@ -551,7 +551,7 @@ def test_simulate_move_2():
     game.load_game(1, win_game)
     grid_ori = game.grid
     legal = [(7, 7)]
-    future_reversi = game.simulate_moves((7, 7))
+    future_reversi = game.simulate_moves([(7, 7)])
     # Check that the original game state has been preserved
     assert game.grid == grid_ori
     assert game.turn == 1
