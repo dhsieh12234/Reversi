@@ -571,28 +571,37 @@ class Reversi(ReversiBase):
                              "of the board.")
         i, j = pos
         self._board.grid[i][j] = Piece(self.turn)
+        
+        n: int = (self._side - self._players) // 2
+        inner_square_indices: List[int] = list(range(n, self._side - n))
+        prelim: bool = (i in inner_square_indices) \
+            and (j in inner_square_indices)
+        
 
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                (0, -1), (1, -1), (1, 0), (1, 1)]
 
-        for d in directions:
-            k, l = d
-            captured_pieces: List[Tuple[int, int]] = []
-            n: int = 1
-            while self._board.in_board((i + n * k, j + n * l)):
-                if n == 1 and self.grid[i + n * k][j + n * l] == self.turn:
-                    break
-                if self.grid[i + n * k][j + n * l] is None:
-                    break
-                if self.grid[i + n * k][j + n * l] == self.turn:
-                    for x, y in captured_pieces:
-                        self._board.grid[x][y] = Piece(self.turn)
-                    break
-                captured_pieces.append((i + n * k, j + n * l))
-                n += 1
-            continue
+        #captures
+        if not prelim:
+            for d in directions:
+                k, l = d
+                captured_pieces: List[Tuple[int, int]] = []
+                n: int = 1
+                while self._board.in_board((i + n * k, j + n * l)):
+                    if n == 1 and self.grid[i + n * k][j + n * l] == self.turn:
+                        break
+                    if self.grid[i + n * k][j + n * l] is None:
+                        break
+                    if self.grid[i + n * k][j + n * l] == self.turn:
+                        for x, y in captured_pieces:
+                            self._board.grid[x][y] = Piece(self.turn)
+                        break
+                    captured_pieces.append((i + n * k, j + n * l))
+                    n += 1
+                continue
 
+        #update turns and check if done
         self._total_turns += 1
         next_player = self.turn
         while self.available_moves == []:
