@@ -31,9 +31,9 @@ class ReversiBot:
         self.player = player
         self.stub = stub
         if self.player == 1:
-            self.type = "random"
-        else:
             self.type = "optimizer"
+        else:
+            self.type = "big brain"
     
     def get_move(self) -> Optional[Tuple[int,int]]:
         """
@@ -51,9 +51,9 @@ class ReversiBot:
             move = random.choices(moves)[0]
         elif self.type == "optimizer":
             move = self.stub.choose_move()
+        elif self.type == "big brain":
+            move = self.stub.choose_better_move()
         return move
-
-
 
     
 def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) \
@@ -73,12 +73,16 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: ReversiBotMock) \
     """
 
     while not (len(game.outcome) == 1 or len(game.outcome) == 2):
+        print ("\n")
+        print ("NEW TURN")
         if game.turn == 1:
             move = player1.get_move()
+            print (f"player 1 move: {move}")
             if move is not None:
                 game.apply_move(move)
         elif game.turn == 2:
             move = player2.get_move()
+            print (f"player 2 move: {move}")
             if move is not None:
                 game.apply_move(move)
     return game.outcome 
@@ -115,7 +119,10 @@ def play_num_games(numgames: int) -> None:
 
 
 def main():
+    startTime = time.time()
     numgame = int(sys.argv[1])
     play_num_games(numgame)
-
+    endTime = time.time()
+    elapsedTime = endTime - startTime
+    print(f'time={elapsedTime:6.3f}')
 main()

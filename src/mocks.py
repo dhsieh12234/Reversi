@@ -553,6 +553,7 @@ class ReversiBotMock(ReversiMock):
                         player1 += 1
                     if square == 2:
                         player2 += 1
+        print (f"player 1: {player1}, player 2: {player2}")
         if player1 > player2:
             winners.append(1)
         elif player1 < player2:
@@ -762,7 +763,6 @@ class ReversiBotMock(ReversiMock):
         return sim_game
 
 
-
     def choose_move(self) -> Tuple[int,int]:
         """
         Chooses the move from a list of avaliable moves that gives the player 
@@ -865,3 +865,76 @@ class ReversiBotMock(ReversiMock):
                 optimal_move = move
                 num_square = count
         return optimal_move
+    
+   
+    def choose_better_move (self):
+        
+        def num_captured_pieces(move, grid):
+            x,y = move
+            cur_captured_pieces_count = 0
+            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
+                (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
+            for d in directions:
+                k,l = d
+                captured_pieces: List[Tuple[int, int]] = []
+                n: int = 1
+                while in_board((x + n * k, y + n * l)):
+                    if n == 1 and self._grid[x + n * k][y + n * l] == self.turn:
+                        break
+                    if self._grid[x + n * k][y + n * l] is None:
+                        break
+                    if self._grid[x + n * k][y + n * l] == self.turn:
+                        cur_captured_pieces_count += len(captured_pieces)
+                        break
+                    captured_pieces.append((x + n * k, y + n * l))
+                    n += 1
+                continue
+            return cur_captured_pieces_count
+
+        def in_board(pos: Tuple[int, int]) -> bool:
+            """
+            Checks whether a move can be placed onto the board
+
+            Inputs:
+                pos: the position of a piece
+            
+            Returns: True, if the piece is in the board.
+                False, if the piece is outside the board
+            """
+            i, j = pos
+            return ((i >= 0) and (i < self._side)\
+                         and (j >= 0) and (j < self._side))    
+        
+        def find_average (list):
+            sum = 0
+            for num in list:
+                sum += num
+            return sum / (len(list))
+
+
+        # loops thru the avaliable moves by P1
+        count = self._side ** 2
+        moves = self.available_moves
+        optimal_move = moves[0]
+        for move1 in moves:
+            print (move1)
+            new_grid = self.simulate_moves([move1])
+            moves2 = new_grid.available_moves
+            captured_pieces = []
+
+        #  get the average for the moves avaliable for P2
+            for move2 in moves2:
+                captured_pieces.append(num_captured_pieces(move2, new_grid))
+            print (captured_pieces)
+            average = find_average(captured_pieces)
+            print (average)
+        
+        # compare average of 1 move to the other
+            if average < count:
+                count = average
+                optimal_move = move1
+        
+        return optimal_move
+
+            
+
