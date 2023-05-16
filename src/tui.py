@@ -9,8 +9,9 @@ from reversi import Reversi, Board, BoardGridType
 @click.option("-s", "--board-size", default = 8)
 @click.option("--othello", is_flag = True)
 @click.option("--non-othello", is_flag = True)
+@click.option("--bot", default = None)
 def run_game(num_players: int, board_size: int, othello: bool, 
-             non_othello: bool) -> None:
+             non_othello: bool, bot: Optional[str]) -> None:
     try:
         game: Reversi = Reversi(board_size, num_players, not non_othello)
     except Exception as e:
