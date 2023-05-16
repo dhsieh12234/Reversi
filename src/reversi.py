@@ -472,7 +472,6 @@ class Reversi(ReversiBase):
         for i, count in enumerate(piece_count):
             if count == max(piece_count):
                 winners.append(i + 1)
-        print(piece_count)
         return winners
 
     #
@@ -540,6 +539,35 @@ class Reversi(ReversiBase):
             continue
         return False
 
+    def captures(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        """
+        Returns pieces captured by playing pos (assumes that pos in the board).
+        Args:
+            pos: Position on the board
+        Returns: Pieces captured
+        """        
+        i, j = pos
+
+        directions: List[Tuple[int, int]] \
+            = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
+               (0, -1), (1, -1), (1, 0), (1, 1)]
+
+        captured_pieces: List[Tuple[int, int]] = []
+        for d in directions:
+            k, l = d
+            captured_pieces_temp: List[Tuple[int, int]] = []
+            n = 1
+            while self._board.in_board((i + n * k, j + n * l)):
+                if self.grid[i + n * k][j + n * l] is None:
+                    break
+                if self.grid[i + n * k][j + n * l] == self.turn:
+                    captured_pieces += captured_pieces_temp
+                    break
+                captured_pieces_temp.append((i + n * k, j + n * l))
+                n += 1
+            continue
+        return captured_pieces
+    
     def apply_move(self, pos: Tuple[int, int]) -> None:
         """
         Place a piece of the current player (as returned
@@ -576,7 +604,7 @@ class Reversi(ReversiBase):
         inner_square_indices: List[int] = list(range(n, self._side - n))
         prelim: bool = (i in inner_square_indices) \
             and (j in inner_square_indices)
-        
+
 
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
@@ -584,22 +612,8 @@ class Reversi(ReversiBase):
 
         #captures
         if not prelim:
-            for d in directions:
-                k, l = d
-                captured_pieces: List[Tuple[int, int]] = []
-                n = 1
-                while self._board.in_board((i + n * k, j + n * l)):
-                    if n == 1 and self.grid[i + n * k][j + n * l] == self.turn:
-                        break
-                    if self.grid[i + n * k][j + n * l] is None:
-                        break
-                    if self.grid[i + n * k][j + n * l] == self.turn:
-                        for x, y in captured_pieces:
-                            self._board.grid[x][y] = Piece(self.turn)
-                        break
-                    captured_pieces.append((i + n * k, j + n * l))
-                    n += 1
-                continue
+            for x, y in self.captures(pos):
+                self._board.grid[x][y] = Piece(self.turn)
 
         #update turns and check if done
         self._total_turns += 1
@@ -609,7 +623,6 @@ class Reversi(ReversiBase):
             if self.turn == next_player:
                 self._done = True
                 break
-        print(self._board)
 
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
@@ -696,7 +709,6 @@ class Reversi(ReversiBase):
         sim_game: Reversi = deepcopy(self)
         for i, move in enumerate(moves):
             if sim_game.done:
-                # print(f"The game ended at move {i}.")
                 return sim_game
             if not self._board.in_board(move):
                 raise ValueError("All moves must be on the board.")
