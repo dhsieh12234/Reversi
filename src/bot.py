@@ -41,7 +41,7 @@ class RandomBot:
 
         """
         moves = self._reversi.available_moves
-        print(f"random moves: {moves}")
+        # print(f"random moves: {moves}")
         if len(moves) == 0:
             return None
         return random.choice(moves)
@@ -89,27 +89,27 @@ class SmartBot:
         optimal_move = [moves[0]]
         max_captured_pieces = 0
         for move in moves:
-            print(f"tested move: {move}")
-            x,y = move
-            cur_captured_pieces_count = 0
-            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
-                (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
-            for d in directions:
-                k,l = d
-                captured_pieces: List[Tuple[int, int]] = []
-                n: int = 1
-                while in_board((x + n * k, y + n * l)):
-                    if n == 1 and self._reversi._board.grid[x + n * k][y + n * l] == self._player1:
-                        break
-                    if self._reversi._board.grid[x + n * k][y + n * l] is None:
-                        break
-                    if self._reversi._board.grid[x + n * k][y + n * l] == self._player1:
-                        cur_captured_pieces_count += len(captured_pieces)
-                        break
-                    captured_pieces.append((x + n * k, y + n * l))
-                    n += 1
-                continue
-            print(f"number captured pieces: {cur_captured_pieces_count}")
+            # # print(f"tested move: {move}")
+            # x,y = move
+            cur_captured_pieces_count = len(self._reversi.captures(move))
+            # directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
+            #     (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
+            # for d in directions:
+            #     k,l = d
+            #     captured_pieces: List[Tuple[int, int]] = []
+            #     n: int = 1
+            #     while in_board((x + n * k, y + n * l)):
+            #         if n == 1 and self._reversi._board.grid[x + n * k][y + n * l] == self._player1:
+            #             break
+            #         if self._reversi._board.grid[x + n * k][y + n * l] is None:
+            #             break
+            #         if self._reversi._board.grid[x + n * k][y + n * l] == self._player1:
+            #             cur_captured_pieces_count += len(captured_pieces)
+            #             break
+            #         captured_pieces.append((x + n * k, y + n * l))
+            #         n += 1
+            #     continue
+            # # print(f"number captured pieces: {cur_captured_pieces_count}")
             if cur_captured_pieces_count > max_captured_pieces:
                 max_captured_pieces = cur_captured_pieces_count
                 optimal_move = []
@@ -175,27 +175,28 @@ class VerySmartBot:
 
         """
       
-        def num_captured_pieces(move, grid):
-            print (f"tested move: {move}")
-            x,y = move
-            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
-                (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
-            captured_pieces = []
-            for d in directions:
-                k,l = d
-                n: int = 1
-                while in_board((x + n * k, y + n * l)):
-                    if n == 1 and grid[x + n * k][y + n * l] == self._reversi.turn:
-                        break
-                    if grid[x + n * k][y + n * l] is None:
-                        break
-                    if grid[x + n * k][y + n * l] == self._reversi.turn:
-                        break
-                    captured_pieces.append((x + n * k, y + n * l))
-                    n += 1
-                continue
-            print(f"captured pieces: {captured_pieces}")
-            return len(captured_pieces)
+        # def num_captured_pieces(move, grid):
+        #     # print (f"tested move: {move}")
+        #     # print (f"current grid: {grid}c")
+        #     x,y = move
+        #     directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
+        #         (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
+        #     captured_pieces = []
+        #     for d in directions:
+        #         k,l = d
+        #         n: int = 1
+        #         while in_board((x + n * k, y + n * l)):
+        #             if n == 1 and grid[x + n * k][y + n * l] == self._reversi.turn:
+        #                 break
+        #             if grid[x + n * k][y + n * l] is None:
+        #                 break
+        #             if grid[x + n * k][y + n * l] == self._reversi.turn:
+        #                 break
+        #             captured_pieces.append((x + n * k, y + n * l))
+        #             n += 1
+        #         continue
+        #     # print(f"captured pieces: {captured_pieces}")
+        #     return len(captured_pieces)
 
         def in_board(pos: Tuple[int, int]) -> bool:
             """
@@ -223,16 +224,16 @@ class VerySmartBot:
         moves = self._reversi.available_moves
         optimal_move = [moves[0]]
         for move1 in moves:
-            new_grid = self._reversi.simulate_moves([move1])
+            new_grid: Reversi = self._reversi.simulate_moves([move1])
             moves2 = new_grid.available_moves
             captured_pieces = []
 
         #  get the average for the moves avaliable for P2
             for move2 in moves2:
-                captured_pieces.append(num_captured_pieces(move2, new_grid.grid))
-            print(f"all captured pieces: {captured_pieces}")
+                captured_pieces.append(len(new_grid.captures(move2)))
+            # print(f"all captured pieces: {captured_pieces}")
             average = find_average(captured_pieces)
-            print(f"average: {average}")
+            # print(f"average: {average}")
         
         # compare average of 1 move to the other
             if average < count:
@@ -258,13 +259,10 @@ class ReversiBot:
         """
         self.player = player
         if self.player == "random":
-            # print("Random Bot")
             self.bot = RandomBot(reversi, player)
         elif self.player == "smart":
-            # print("Smart Bot")
             self.bot = SmartBot(reversi, player)
         elif self.player == "very smart":
-            # print("Very Smart Bot")
             self.bot = VerySmartBot(reversi, player)
 
     
@@ -285,16 +283,16 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: Reversi) \
     """
 
     while not (len(game.outcome) == 1 or len(game.outcome) == 2):
-        print("\n")
-        print("NEW TURN")
+        # print("\n")
+        # print("NEW TURN")
         if game.turn == 1:
             move = player1.bot.suggest_move()
-            print(f"player 1 move: {move}")
+            # print(f"player 1 move: {move}")
             if move is not None:
                 game.apply_move(move)
         elif game.turn == 2:
             move = player2.bot.suggest_move()
-            print(f"player 2 move: {move}")
+            # print(f"player 2 move: {move}")
             if move is not None:
                 game.apply_move(move)
     return game.outcome 
@@ -310,9 +308,9 @@ def play_num_games(numgames: int) -> None:
     player2_wins = 0
     draws = 0
     for i in range(numgames):
-        board = Reversi (8,2, True)
+        board = Reversi (6,2, True)
         player1 = ReversiBot("random", board)
-        player2 = ReversiBot("very smart", board)
+        player2 = ReversiBot("smart", board)
         result = play_game(player1, player2, board)
         if len (result) == 1:  
             if result[0] == 1:

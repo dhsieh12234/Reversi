@@ -623,7 +623,7 @@ class Reversi(ReversiBase):
             if self.turn == next_player:
                 self._done = True
                 break
-
+        # print (self._board)
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
         """
