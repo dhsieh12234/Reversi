@@ -393,7 +393,6 @@ class Reversi(ReversiBase):
             self._board.grid[side // 2 - 1][side // 2 - 1] = Piece(2)
             self._board.grid[side // 2][side // 2] = Piece(2)
         self._done = False
-
     #
     # PROPERTIES
     #
@@ -437,7 +436,7 @@ class Reversi(ReversiBase):
             return [(-1, -1)]
         else:
             avail_moves: List = []
-            for x, j in enumerate(self.grid):
+            for x, j in enumerate(self._board.grid):
                 for y, k in enumerate(j):
                     if self.legal_move((x, y)):
                         avail_moves.append((x, y))
@@ -473,6 +472,7 @@ class Reversi(ReversiBase):
         for i, count in enumerate(piece_count):
             if count == max(piece_count):
                 winners.append(i + 1)
+        print(piece_count)
         return winners
 
     #
@@ -609,6 +609,7 @@ class Reversi(ReversiBase):
             if self.turn == next_player:
                 self._done = True
                 break
+        print(self._board)
 
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
@@ -695,7 +696,7 @@ class Reversi(ReversiBase):
         sim_game: Reversi = deepcopy(self)
         for i, move in enumerate(moves):
             if sim_game.done:
-                print(f"The game ended at move {i}.")
+                # print(f"The game ended at move {i}.")
                 return sim_game
             if not self._board.in_board(move):
                 raise ValueError("All moves must be on the board.")
