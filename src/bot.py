@@ -259,24 +259,28 @@ class ReversiBot:
         Constructor
 
         Args: 
-            player: the player whos moves you are finding
-            stub: the grid of the current game
+            game: the Reversi game in question
 
         Methods:
-            move(bot: str): returns the move supplied by the given bot.
+            hint(bot: str): returns the move supplied by the given bot.
+            move(bot: str): applies the hinted move.
         """
         self.game = reversi
         self.rand = RandomBot(reversi)
         self.smart = SmartBot(reversi)
         self.very_smart = VerySmartBot(reversi)
 
-    def move(self, bot: str) -> None:
+    def hint(self, bot: str) -> Tuple[int, int]:
         if bot == "random":
             suggested_move: Tuple[int, int] = self.rand.suggest_move
         if bot == "smart":
             suggested_move = self.smart.suggest_move
         if bot == "very-smart":
             suggested_move = self.very_smart.suggest_move
+        return suggested_move
+    
+    def move(self, bot: str) -> None:
+        self.game.apply_move(self.hint(bot))
 
     
 def play_game(player1: ReversiBot, player2: ReversiBot, game: Reversi) \
