@@ -249,21 +249,34 @@ class ReversiBot:
     Gets a random for the bot to act upon
     """
 
-    def __init__(self, player: int, reversi: Reversi) -> None:
+    game: Reversi
+    rand: RandomBot
+    smart: SmartBot
+    very_smart: VerySmartBot
+
+    def __init__(self, reversi: Reversi) -> None:
         """
         Constructor
 
         Args: 
             player: the player whos moves you are finding
             stub: the grid of the current game
+
+        Methods:
+            move(bot: str): returns the move supplied by the given bot.
         """
-        self.player = player
-        if self.player == "random":
-            self.bot = RandomBot(reversi, player)
-        elif self.player == "smart":
-            self.bot = SmartBot(reversi, player)
-        elif self.player == "very smart":
-            self.bot = VerySmartBot(reversi, player)
+        self.game = reversi
+        self.rand = RandomBot(reversi)
+        self.smart = SmartBot(reversi)
+        self.very_smart = VerySmartBot(reversi)
+
+    def move(self, bot: str) -> None:
+        if bot == "random":
+            suggested_move: Tuple[int, int] = self.rand.suggest_move
+        if bot == "smart":
+            suggested_move = self.smart.suggest_move
+        if bot == "very-smart":
+            suggested_move = self.very_smart.suggest_move
 
     
 def play_game(player1: ReversiBot, player2: ReversiBot, game: Reversi) \
