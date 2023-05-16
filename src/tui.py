@@ -31,8 +31,13 @@ def run_game(num_players: int, board_size: int, othello: bool,
                 print()
                 for i, (j, k) in enumerate(game.available_moves):
                     print(f"{i + 1}) {j}, {k}")
+                print("For a hint enter 'hint'.")
                 print()
                 inp: str = input(">")
+                if inp == "hint":
+                    i, j = game_bot.hint("very-smart")
+                    print(f"Try {i}, {j}.")
+                    continue
                 try:
                     idx: int = int(inp) - 1
                     if idx in range(len(game.available_moves)):
