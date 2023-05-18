@@ -23,7 +23,7 @@ class RandomBot:
     _reversi: Reversi
     _player1: Piece
 
-    def __init__(self, reversi: ReversiBase, player1: Piece):
+    def __init__(self, reversi: ReversiBase):
         """ Constructor
 
         Args:
@@ -32,7 +32,6 @@ class RandomBot:
             player2: opposing player
         """
         self._reversi = reversi
-        self._player1 = player1
 
     def suggest_move(self) -> int:
         """ Suggests a move
@@ -54,7 +53,7 @@ class SmartBot:
     _reversi: Reversi
     _player1: Piece
 
-    def __init__(self, reversi: ReversiBase, player1: Piece):
+    def __init__(self, reversi: ReversiBase):
         """ Constructor
 
         Args:
@@ -63,7 +62,6 @@ class SmartBot:
             player2: opposing player
         """
         self._reversi = reversi
-        self._player1 = player1
 
     def suggest_move(self) -> int:
         """ Suggests a move
@@ -156,7 +154,7 @@ class VerySmartBot:
     _reversi: Reversi
     _player1: Piece
 
-    def __init__(self, reversi: ReversiBase, player1: Piece):
+    def __init__(self, reversi: ReversiBase):
         """ Constructor
 
         Args:
@@ -165,7 +163,6 @@ class VerySmartBot:
             player2: opposing player
         """
         self._reversi = reversi
-        self._player1 = player1
 
 
     def suggest_move(self) -> int:
@@ -272,18 +269,18 @@ class ReversiBot:
 
     def hint(self, bot: str) -> Tuple[int, int]:
         if bot == "random":
-            suggested_move: Tuple[int, int] = self.rand.suggest_move
+            suggested_move: Tuple[int, int] = self.rand.suggest_move()
         if bot == "smart":
-            suggested_move = self.smart.suggest_move
+            suggested_move = self.smart.suggest_move()
         if bot == "very-smart":
-            suggested_move = self.very_smart.suggest_move
+            suggested_move = self.very_smart.suggest_move()
         return suggested_move
     
     def move(self, bot: str) -> None:
         self.game.apply_move(self.hint(bot))
 
     
-def play_game(player1: ReversiBot, player2: ReversiBot, game: Reversi) \
+def play_game(bot1: str, bot2: str, game: Reversi) \
                                                             -> list[int]:
     """
     Play one singular game of ReversiStub which ends when either 4 moves have
@@ -299,19 +296,16 @@ def play_game(player1: ReversiBot, player2: ReversiBot, game: Reversi) \
         player 2
     """
 
+    game_bot: ReversiBot = ReversiBot(game)
     while not (len(game.outcome) == 1 or len(game.outcome) == 2):
         # print("\n")
         # print("NEW TURN")
         if game.turn == 1:
-            move = player1.bot.suggest_move()
+            game_bot.move(bot1)
             # print(f"player 1 move: {move}")
-            if move is not None:
-                game.apply_move(move)
         elif game.turn == 2:
-            move = player2.bot.suggest_move()
+            game_bot.move(bot2)
             # print(f"player 2 move: {move}")
-            if move is not None:
-                game.apply_move(move)
     return game.outcome 
     
 def play_num_games(numgames: int) -> None:
@@ -325,10 +319,7 @@ def play_num_games(numgames: int) -> None:
     player2_wins = 0
     draws = 0
     for i in range(numgames):
-        board = Reversi (6,2, True)
-        player1 = ReversiBot("random", board)
-        player2 = ReversiBot("smart", board)
-        result = play_game(player1, player2, board)
+        result = play_game("random", "smart", Reversi(8, 2, True))
         if len (result) == 1:  
             if result[0] == 1:
                 player1_wins += 1
@@ -352,4 +343,6 @@ def main():
     endTime = time.time()
     elapsedTime = endTime - startTime
     print(f'time={elapsedTime:6.3f}')
-main()
+
+if __name__ == "__main__":
+    main()
