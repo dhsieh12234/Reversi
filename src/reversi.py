@@ -6,6 +6,10 @@ a Reversi class that inherits from this base class.
 from abc import ABC, abstractmethod
 from typing import List, Dict, Reversible, Tuple, Optional
 from copy import deepcopy
+from termcolor import colored, cprint
+
+COLORS: List[str] = ["", "dark_grey", "white", "red", "blue", "green", 
+                     "yellow", "magenta", "cyan", "light_cyan"]
 
 BoardGridType = List[List[Optional[int]]]
 """
@@ -257,7 +261,7 @@ class Piece:
         """
         Returns: a string representation of the piece.
         """
-        return str(self.name)
+        return colored(self.name, COLORS[self.name])
 
 PieceBoardType = List[List[Optional[Piece]]]
 

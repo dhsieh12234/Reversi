@@ -1,9 +1,9 @@
 from typing import List, Tuple, Optional
 import click
 import sys
-from reversi import Reversi, Board, BoardGridType
+from reversi import Reversi, Board, BoardGridType, COLORS
 from bot import ReversiBot
-
+from termcolor import colored, cprint
 
 @click.command("tui")
 @click.option("-n", "--num-players", default = 2)
@@ -27,7 +27,8 @@ def run_game(num_players: int, board_size: int, othello: bool,
             print(game)
             proceed: bool = False
             while not proceed:
-                print(f"It is Player {game.turn}'s turn. Please choose a move:")
+                col_turn: str = colored(game.turn, COLORS[game.turn])
+                print(f"It is Player {col_turn}'s turn. Please choose a move:")
                 print()
                 for i, (j, k) in enumerate(game.available_moves):
                     print(f"{i + 1}) {j}, {k}")
@@ -52,11 +53,13 @@ def run_game(num_players: int, board_size: int, othello: bool,
         if (not bot is None) and game.turn != 1:
             print(game)
             i, j = game_bot.hint(bot)
-            print(f"Player {game.turn} ({bot} bot) makes the move {i}, {j}.")
+            col_turn = colored(game.turn, COLORS[game.turn])
+            print(f"Player {col_turn} ({bot} bot) makes the move {i}, {j}.")
             game_bot.move(bot)
             
     print(game)
     winners: str = ", ".join([str(val) for val in game.outcome])
+    winners = [colored(x, COLORS[x]) for x in winners]
     print("The game is done.")
     if len(winners) == 1:
         print("Player " + winners + " wins.")
