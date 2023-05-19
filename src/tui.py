@@ -37,6 +37,7 @@ def run_game(num_players: int, board_size: int, othello: bool,
                 if inp == "hint":
                     i, j = game_bot.hint("very-smart")
                     print(f"Try {i}, {j}.")
+                    print()
                     continue
                 try:
                     idx: int = int(inp) - 1
@@ -51,7 +52,7 @@ def run_game(num_players: int, board_size: int, othello: bool,
         if (not bot is None) and game.turn != 1:
             print(game)
             i, j = game_bot.hint(bot)
-            print(f"The {bot} bot makes the move {i}, {j}.")
+            print(f"Player {game.turn} ({bot} bot) makes the move {i}, {j}.")
             game_bot.move(bot)
             
     print(game)
