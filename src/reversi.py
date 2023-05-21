@@ -513,14 +513,14 @@ class Reversi(ReversiBase):
         if self.piece_at(pos) is not None:
             return False
 
-        prelim: bool = False
+        #check if the game is in the preliminary phase
         n: int = (self._side - self._players) // 2
         inner_square_indices: List[int] = list(range(n, self._side - n))
         for x in inner_square_indices:
             for y in inner_square_indices:
-                prelim = prelim or (self._board.grid[x][y] is None)
-        if prelim:
-            return (i in inner_square_indices) and (j in inner_square_indices)
+                if self._board.grid[x][y] is None:
+                    return (i in inner_square_indices) \
+                        and (j in inner_square_indices)
 
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
