@@ -261,7 +261,7 @@ class Piece:
         """
         Returns: a string representation of the piece.
         """
-        return colored(self.name, COLORS[self.name])
+        return colored(str(self.name), COLORS[self.name])
 
 PieceBoardType = List[List[Optional[Piece]]]
 
@@ -359,9 +359,6 @@ class Reversi(ReversiBase):
     Class to represent a Reversi game.
     """
 
-    _side: int
-    _players: int
-    _othello: bool
     _board: Board
     _total_turns: int
     _done: bool

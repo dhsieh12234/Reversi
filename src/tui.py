@@ -11,7 +11,7 @@ from termcolor import colored, cprint
 @click.option("--othello", is_flag = True)
 @click.option("--non-othello", is_flag = True)
 @click.option("--bot",
-              type = click.Choice([None, "random", "smart", "very-smart"]),
+              type = click.Choice(["random", "smart", "very-smart"]),
               default = None)
 def run_game(num_players: int, board_size: int, othello: bool, 
              non_othello: bool, bot: Optional[str]) -> None:
@@ -27,7 +27,7 @@ def run_game(num_players: int, board_size: int, othello: bool,
             print(game)
             proceed: bool = False
             while not proceed:
-                col_turn: str = colored(game.turn, COLORS[game.turn])
+                col_turn: str = colored(str(game.turn), COLORS[game.turn])
                 print(f"It is Player {col_turn}'s turn. Please choose a move:")
                 print()
                 for i, (j, k) in enumerate(game.available_moves):
@@ -53,18 +53,18 @@ def run_game(num_players: int, board_size: int, othello: bool,
         if (not bot is None) and game.turn != 1:
             print(game)
             i, j = game_bot.hint(bot)
-            col_turn = colored(game.turn, COLORS[game.turn])
+            col_turn = colored(str(game.turn), COLORS[game.turn])
             print(f"Player {col_turn} ({bot} bot) makes the move {i}, {j}.")
             game_bot.move(bot)
             
     print(game)
-    winners: str = ", ".join([str(val) for val in game.outcome])
-    winners = [colored(x, COLORS[x]) for x in winners]
+    winners: List[str] = [colored(str(x), COLORS[x]) for x in game.outcome]
+    winners_str: str = ", ".join(winners)
     print("The game is done.")
     if len(winners) == 1:
-        print("Player " + winners + " wins.")
+        print("Player " + winners_str + " wins.")
     else:
-        print("Players " + winners + " win.")
+        print("Players " + winners_str + " win.")
 
 if __name__ == "__main__":
     run_game()
