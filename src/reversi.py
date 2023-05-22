@@ -259,9 +259,15 @@ class Piece:
 
     def __str__(self) -> str:
         """
-        Returns: a string representation of the piece.
+        Returns: a colored string representation of the piece.
         """
         return colored(str(self.name), COLORS[self.name])
+    
+    def __repr__(self) -> str:
+        """
+        Returns: an uncolored string representation of the piece.
+        """
+        return str(self.name)
 
 PieceBoardType = List[List[Optional[Piece]]]
 
@@ -445,6 +451,19 @@ class Reversi(ReversiBase):
 
 
     @property
+    def prelim(self) -> bool:
+        """
+        Returns True if the game is still in the preliminary phase.
+        """
+        n: int = (self._side - self._players) // 2
+        inner_square_indices: List[int] = list(range(n, self._side - n))
+        for x in inner_square_indices:
+            for y in inner_square_indices:
+                if self._board.grid[x][y] is None:
+                    return True
+        return False
+    
+    @property
     def done(self) -> bool:
         """
         Returns True if the game is over, False otherwise.
@@ -466,10 +485,10 @@ class Reversi(ReversiBase):
             return []
         winners: List[int] = []
         piece_count: List[int] = [0] * self._players
-        for row in self.grid:
+        for row in self._board.grid:
             for square in row:
                 if square is not None:
-                    piece_count[square - 1] += 1
+                    piece_count[square.name - 1] += 1
         for i, count in enumerate(piece_count):
             if count == max(piece_count):
                 winners.append(i + 1)
@@ -495,7 +514,9 @@ class Reversi(ReversiBase):
             raise ValueError("The specified position is outside the bounds" +
                              "of the board.")
         i, j = pos
-        return self.grid[i][j]
+        if self._board.grid[i][j] is None:
+            return None
+        return int(repr(self._board.grid[i][j]))
 
     def legal_move(self, pos: Tuple[int, int]) -> bool:
         """
@@ -513,34 +534,37 @@ class Reversi(ReversiBase):
         if self.piece_at(pos) is not None:
             return False
 
-        #check if the game is in the preliminary phase
+        #legal moves during preliminary phase
         n: int = (self._side - self._players) // 2
         inner_square_indices: List[int] = list(range(n, self._side - n))
-        for x in inner_square_indices:
-            for y in inner_square_indices:
-                if self._board.grid[x][y] is None:
-                    return (i in inner_square_indices) \
-                        and (j in inner_square_indices)
+        if self.prelim:
+            return (i in inner_square_indices) and (j in inner_square_indices)    
 
+        #legal moves after the preliminary phase
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                (0, -1), (1, -1), (1, 0), (1, 1)]
-
+        
         for d in directions:
             k, l = d
             m: int = 1
             while self._board.in_board((i + m * k, j + m * l)):
-                if m == 1 and self.grid[i + m * k][j + m * l] == self.turn:
+                square: Optional[Piece] = self._board.grid[i + m * k][j + m * l]
+                if square is None:
                     break
-                if self.grid[i + m * k][j + m * l] is None:
+                if m == 1 and square.name == self.turn:
                     break
-                if self.grid[i + m * k][j + m * l] == self.turn:
+                if square.name == self.turn:
                     return True
                 m += 1
             continue
         return False
+        #to check legal moves we could just return len(self.captures(pos)) > 0
+        # but that would be less efficient
 
-    def captures(self, pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+    def captures(self, pos: Tuple[int, int], 
+                 players: List[int] = list(range(1, 10))) \
+                    -> List[Tuple[int, int]]:
         """
         Returns pieces captured by playing pos (assumes that pos in the board).
         Args:
@@ -549,6 +573,11 @@ class Reversi(ReversiBase):
         """        
         i, j = pos
 
+        #no captures occur during the preliminary phase
+        if self.prelim:
+            return []
+        
+        #captures after the preliminary phase
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                (0, -1), (1, -1), (1, 0), (1, 1)]
@@ -559,12 +588,14 @@ class Reversi(ReversiBase):
             captured_pieces_temp: List[Tuple[int, int]] = []
             n = 1
             while self._board.in_board((i + n * k, j + n * l)):
-                if self.grid[i + n * k][j + n * l] is None:
+                square: Optional[Piece] = self._board.grid[i + n * k][j + n * l]
+                if square is None:
                     break
-                if self.grid[i + n * k][j + n * l] == self.turn:
+                if square.name == self.turn:
                     captured_pieces += captured_pieces_temp
                     break
-                captured_pieces_temp.append((i + n * k, j + n * l))
+                if square.name in players:
+                    captured_pieces_temp.append((i + n * k, j + n * l))
                 n += 1
             continue
         return captured_pieces
@@ -596,25 +627,16 @@ class Reversi(ReversiBase):
         Returns: None
         """
         if not self._board.in_board(pos):
-            raise ValueError("The specified position is outside the bounds" +
+            raise ValueError("The specified position is outside the bounds " +
                              "of the board.")
         i, j = pos
         self._board.grid[i][j] = Piece(self.turn)
-        
-        n: int = (self._side - self._players) // 2
-        inner_square_indices: List[int] = list(range(n, self._side - n))
-        prelim: bool = (i in inner_square_indices) \
-            and (j in inner_square_indices)
-
-
-        directions: List[Tuple[int, int]] \
-            = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
-               (0, -1), (1, -1), (1, 0), (1, 1)]
+        if self.prelim:
+            return
 
         #captures
-        if not prelim:
-            for x, y in self.captures(pos):
-                self._board.grid[x][y] = Piece(self.turn)
+        for x, y in self.captures(pos):
+            self._board.grid[x][y] = Piece(self.turn)
 
         #update turns and check if done
         self._total_turns += 1
@@ -624,7 +646,6 @@ class Reversi(ReversiBase):
             if self.turn == next_player:
                 self._done = True
                 break
-        # print (self._board)
 
     def load_game(self, turn: int, grid: BoardGridType) -> None:
         """

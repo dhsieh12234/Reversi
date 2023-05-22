@@ -21,28 +21,22 @@ class RandomBot:
     """
 
     _reversi: Reversi
-    _player1: Piece
 
     def __init__(self, reversi: ReversiBase):
         """ Constructor
 
         Args:
-            board: Board the bot will play on
-            player1: bot player
-            player2: opposing player
+            reversi: The game that the bot plays in
         """
         self._reversi = reversi
 
-    def suggest_move(self) -> int:
+    def suggest_move(self) -> Tuple[int, int]:
         """ Suggests a move
 
         Returns: None
 
         """
         moves = self._reversi.available_moves
-        # print(f"random moves: {moves}")
-        if len(moves) == 0:
-            return None
         return random.choice(moves)
 
 class SmartBot:
@@ -51,70 +45,29 @@ class SmartBot:
     """
 
     _reversi: Reversi
-    _player1: Piece
 
     def __init__(self, reversi: ReversiBase):
         """ Constructor
 
         Args:
-            board: Board the bot will play on
-            player1: bot player
-            player2: opposing player
+            reversi: The game that the bot plays in
         """
         self._reversi = reversi
 
-    def suggest_move(self) -> int:
+    def suggest_move(self) -> Tuple[int, int]:
         """ Suggests a move
 
         Returns: None
 
         """
-        def in_board(pos: Tuple[int, int]) -> bool:
-            """
-            Checks whether a move can be placed onto the board
-
-            Inputs:
-                pos: the position of a piece
-            
-            Returns: True, if the piece is in the board.
-                False, if the piece is outside the board
-            """
-            i, j = pos
-            return ((i >= 0) and (i < self._reversi._side)\
-                            and (j >= 0) and (j < self._reversi._side))
-
         moves = self._reversi.available_moves
-        optimal_move = [moves[0]]
-        max_captured_pieces = 0
-        for move in moves:
-            # # print(f"tested move: {move}")
-            # x,y = move
-            cur_captured_pieces_count = len(self._reversi.captures(move))
-            # directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
-            #     (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
-            # for d in directions:
-            #     k,l = d
-            #     captured_pieces: List[Tuple[int, int]] = []
-            #     n: int = 1
-            #     while in_board((x + n * k, y + n * l)):
-            #         if n == 1 and self._reversi._board.grid[x + n * k][y + n * l] == self._player1:
-            #             break
-            #         if self._reversi._board.grid[x + n * k][y + n * l] is None:
-            #             break
-            #         if self._reversi._board.grid[x + n * k][y + n * l] == self._player1:
-            #             cur_captured_pieces_count += len(captured_pieces)
-            #             break
-            #         captured_pieces.append((x + n * k, y + n * l))
-            #         n += 1
-            #     continue
-            # # print(f"number captured pieces: {cur_captured_pieces_count}")
-            if cur_captured_pieces_count > max_captured_pieces:
-                max_captured_pieces = cur_captured_pieces_count
-                optimal_move = []
-                optimal_move = [move]
-            elif cur_captured_pieces_count == max_captured_pieces:
-                optimal_move.append(move)
-        return random.choice(optimal_move)
+        capture_counts = [len(self._reversi.captures(move)) for move in moves]
+        max_capture = max(capture_counts)
+        optimal_moves = []
+        for i, x in enumerate(capture_counts):
+            if x == max_capture:
+                optimal_moves.append(moves[i])
+        return random.choice(optimal_moves)
 
     def suggest_move_v2(self) -> int:
 
@@ -152,70 +105,57 @@ class VerySmartBot:
     """
 
     _reversi: Reversi
-    _player1: Piece
 
     def __init__(self, reversi: ReversiBase):
         """ Constructor
 
         Args:
-            board: Board the bot will play on
-            player1: bot player
-            player2: opposing player
+            reversi: The game that the bot plays in
         """
         self._reversi = reversi
 
 
-    def suggest_move(self) -> int:
+    def suggest_move(self) -> Tuple[int, int]:
         """ Suggests a move
 
         Returns: None
 
-        """
-      
-        # def num_captured_pieces(move, grid):
-        #     # print (f"tested move: {move}")
-        #     # print (f"current grid: {grid}c")
-        #     x,y = move
-        #     directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
-        #         (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
-        #     captured_pieces = []
-        #     for d in directions:
-        #         k,l = d
-        #         n: int = 1
-        #         while in_board((x + n * k, y + n * l)):
-        #             if n == 1 and grid[x + n * k][y + n * l] == self._reversi.turn:
-        #                 break
-        #             if grid[x + n * k][y + n * l] is None:
-        #                 break
-        #             if grid[x + n * k][y + n * l] == self._reversi.turn:
-        #                 break
-        #             captured_pieces.append((x + n * k, y + n * l))
-        #             n += 1
-        #         continue
-        #     # print(f"captured pieces: {captured_pieces}")
-        #     return len(captured_pieces)
-
-        def in_board(pos: Tuple[int, int]) -> bool:
-            """
-            Checks whether a move can be placed onto the board
-
-        Inputs:
-                pos: the position of a piece
-            
-            Returns: True, if the piece is in the board.
-                False, if the piece is outside the board
-            """
-            i, j = pos
-            return ((i >= 0) and (i < self._reversi._side)\
-                         and (j >= 0) and (j < self._reversi._side))    
+        """   
         
-        def find_average (list):
+        def find_average(list):
             sum = 0
             for num in list:
                 sum += num
             return sum / (len(list))
 
+        moves = self._reversi.available_moves
+        player = self._reversi.turn
+        dif_values = []
+        for move1 in moves:
+            sim_game: Reversi = self._reversi.simulate_moves([move1])
+            #check if move1 wins the game
+            winners = sim_game.outcome
+            if len(winners) == 1 and winners[0] == player:
+                return move1
+            #maximize value
+            #we count the pieces captured by move1 and move2
+            # not the total number of pieces on the board
+            piece_count_difs: List[int] = []
+            for move2 in sim_game.available_moves:
+                captures1: int = len(self._reversi.captures(move1))
+                captures2: int = len(sim_game.captures(move2, [player]))
+                dif: int = captures1 - captures2
+                piece_count_difs.append(dif)
+            dif_values.append(find_average(piece_count_difs))
+        max_value = max(dif_values)
+        optimal_moves = []
+        for i, x in enumerate(dif_values):
+            if x == max_value:
+                optimal_moves.append(moves[i])
+        return random.choice(optimal_moves)
 
+        #OLD CODE:
+        """
         # loops thru the avaliable moves by P1
         count = self._reversi._side ** 2
         moves = self._reversi.available_moves
@@ -240,10 +180,11 @@ class VerySmartBot:
             elif average == count:
                 optimal_move.append(move1)
         return random.choice(optimal_move)
+        """
 
 class ReversiBot:
     """
-    Gets a random for the bot to act upon
+    A class which contains all 3 of the bots at once.
     """
 
     game: Reversi
