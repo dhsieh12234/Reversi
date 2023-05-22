@@ -872,12 +872,12 @@ class ReversiBotMock(ReversiMock):
         def num_captured_pieces(move, grid):
             x,y = move
             cur_captured_pieces_count = 0
-            directions: List[Tuple[int, int]] = [(0, 1), (-1, 1), (-1, 0), \
+            directions= [(0, 1), (-1, 1), (-1, 0), \
                 (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1)]
             for d in directions:
                 k,l = d
-                captured_pieces: List[Tuple[int, int]] = []
-                n: int = 1
+                captured_pieces = []
+                n = 1
                 while in_board((x + n * k, y + n * l)):
                     if n == 1 and self._grid[x + n * k][y + n * l] == self.turn:
                         break

@@ -6,11 +6,13 @@ Bots for Reversi
 import random
 import sys
 from typing import Union, Tuple, Optional, List
+import click
 import time
 
 
 from mocks import ReversiStub, ReversiBotMock
 from reversi import Reversi, Piece, Board, ReversiBase
+
 
 #
 # BOTS
@@ -22,7 +24,7 @@ class RandomBot:
 
     _reversi: Reversi
 
-    def __init__(self, reversi: ReversiBase):
+    def __init__(self, reversi: Reversi):
         """ Constructor
 
         Args:
@@ -46,7 +48,7 @@ class SmartBot:
 
     _reversi: Reversi
 
-    def __init__(self, reversi: ReversiBase):
+    def __init__(self, reversi: Reversi):
         """ Constructor
 
         Args:
@@ -69,35 +71,6 @@ class SmartBot:
                 optimal_moves.append(moves[i])
         return random.choice(optimal_moves)
 
-    def suggest_move_v2(self) -> int:
-
-        def num_squares(grid: Reversi) -> int:
-            """
-            Checks to see how many pieces a specific players has on the
-            board
-
-            Inputs:
-                grid: the current grid after making the move
-            
-            Returns: the number of pieces a player has
-            """
-            count = 0
-            for row in grid._board.grid:
-                for square in row:
-                    if square == self._reversi.turn:
-                        count += 1
-            return count
-
-        moves = self._reversi.available_moves
-        optimal_move = moves[0]
-        num_square = 0
-        for move in moves:
-            new_grid = self._reversi.simulate_moves([move])
-            count = num_squares(new_grid)
-            if count > num_square:
-                optimal_move = move
-                num_square = count
-        return optimal_move
 
 class VerySmartBot:
     """
@@ -106,7 +79,7 @@ class VerySmartBot:
 
     _reversi: Reversi
 
-    def __init__(self, reversi: ReversiBase):
+    def __init__(self, reversi: Reversi):
         """ Constructor
 
         Args:
@@ -133,10 +106,12 @@ class VerySmartBot:
         dif_values = []
         for move1 in moves:
             sim_game: Reversi = self._reversi.simulate_moves([move1])
+            
             #check if move1 wins the game
             winners = sim_game.outcome
             if len(winners) == 1 and winners[0] == player:
                 return move1
+            
             #maximize value
             #we count the pieces captured by move1 and move2
             # not the total number of pieces on the board
@@ -153,34 +128,6 @@ class VerySmartBot:
             if x == max_value:
                 optimal_moves.append(moves[i])
         return random.choice(optimal_moves)
-
-        #OLD CODE:
-        """
-        # loops thru the avaliable moves by P1
-        count = self._reversi._side ** 2
-        moves = self._reversi.available_moves
-        optimal_move = [moves[0]]
-        for move1 in moves:
-            new_grid: Reversi = self._reversi.simulate_moves([move1])
-            moves2 = new_grid.available_moves
-            captured_pieces = []
-
-        #  get the average for the moves avaliable for P2
-            for move2 in moves2:
-                captured_pieces.append(len(new_grid.captures(move2)))
-            # print(f"all captured pieces: {captured_pieces}")
-            average = find_average(captured_pieces)
-            # print(f"average: {average}")
-        
-        # compare average of 1 move to the other
-            if average < count:
-                count = average
-                optimal_move = []
-                optimal_move.append(move1)
-            elif average == count:
-                optimal_move.append(move1)
-        return random.choice(optimal_move)
-        """
 
 class ReversiBot:
     """
@@ -221,8 +168,7 @@ class ReversiBot:
         self.game.apply_move(self.hint(bot))
 
     
-def play_game(bot1: str, bot2: str, game: Reversi) \
-                                                            -> list[int]:
+def play_game(bot1: str, bot2: str, game: Reversi) -> list[int]:
     """
     Play one singular game of ReversiStub which ends when either 4 moves have
     been taken or a player hits (0,0)
@@ -239,17 +185,24 @@ def play_game(bot1: str, bot2: str, game: Reversi) \
 
     game_bot: ReversiBot = ReversiBot(game)
     while not (len(game.outcome) == 1 or len(game.outcome) == 2):
-        # print("\n")
-        # print("NEW TURN")
         if game.turn == 1:
             game_bot.move(bot1)
-            # print(f"player 1 move: {move}")
         elif game.turn == 2:
             game_bot.move(bot2)
-            # print(f"player 2 move: {move}")
     return game.outcome 
     
-def play_num_games(numgames: int) -> None:
+
+@click.command("bot")
+@click.option('-n', '--num-games', type=int, default=100)
+@click.option('-1', '--player1', \
+    type=click.Choice(['random', 'smart', 'very-smart']), default='random')
+@click.option('-2', '--player2', \
+    type=click.Choice(['random', 'smart', 'very-smart']), default='random')
+
+def main(num_games: int, player1: str, player2: str):
+    play_num_games(num_games, player1, player2)
+
+def play_num_games(numgames: int, player1: str, player2: str) -> None:
     """
     Play a specific number of Reversi games specified by the user
 
@@ -260,7 +213,7 @@ def play_num_games(numgames: int) -> None:
     player2_wins = 0
     draws = 0
     for i in range(numgames):
-        result = play_game("random", "smart", Reversi(8, 2, True))
+        result = play_game(player1, player2, Reversi(8, 2, True))
         if len (result) == 1:  
             if result[0] == 1:
                 player1_wins += 1
@@ -271,19 +224,10 @@ def play_num_games(numgames: int) -> None:
     player1_perc = round(((player1_wins / numgames)* 100),2)
     player2_perc = round(((player2_wins / numgames)* 100),2)
     draw_perc = round(((draws / numgames) * 100),3)
-
+    
     print (f"Player 1 wins: {player1_perc}%")
     print (f"Player 2 wins: {player2_perc}%")
     print (f"Ties: {draw_perc}%")
-
-
-def main():
-    startTime = time.time()
-    numgame = int(sys.argv[1])
-    play_num_games(numgame)
-    endTime = time.time()
-    elapsedTime = endTime - startTime
-    print(f'time={elapsedTime:6.3f}')
 
 if __name__ == "__main__":
     main()
