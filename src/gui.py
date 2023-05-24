@@ -2,7 +2,7 @@ import os
 import sys
 import math
 import click
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Union
 from reversi import Reversi, Board, BoardGridType, COLORS
 from bot import ReversiBot
 from termcolor import colored, cprint
@@ -131,7 +131,7 @@ class Game_Interface:
         #Create the Background and Turn
         turn_center : Tuple[int, float]= (self.border + self.square * (self.cells_side + 1), 
                         self.border + 2.5 * self.square)
-        turn_rect : Tuple[float, int, int, int] = (self.border + self.square * (self.cells_side + 0.5), 
+        turn_rect : Union[Union[Rect, Tuple[int, int, int, int]]] = (self.border + self.square * (self.cells_side + 0.5), 
                     self.border + 2 * self.square , self.square, self.square)
         text_loc : Tuple[float, float] = (self.border + self.square * (self.cells_side + 0.5), 
                     self.border + 1.5 * self.square)
