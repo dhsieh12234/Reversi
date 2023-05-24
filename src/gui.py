@@ -66,8 +66,8 @@ class Game_Interface:
         # Set window title
         pygame.display.set_caption("BitEdit")
         # Set window size
-        self.surface = pygame.display.set_mode((self.window + self.border + self.square * 1.5,
-                                                self.window))
+        self.surface = pygame.display.set_mode(\
+                (self.window + self.border + self.square * 1.5, self.window))
         self.clock = pygame.time.Clock()
 
         self.event_loop()
@@ -90,7 +90,8 @@ class Game_Interface:
             self_x = (x - self.border) // (self.square)
         if self.border < x < grid_edge:
             self_y = (y - self.border) // (self.square)
-        if self_x is not None and self_y is not None and self.game.legal_move((self_y, self_x)):
+        if self_x is not None and self_y is not None and \
+            self.game.legal_move((self_y, self_x)):
             self.game.grid[self_y][self_x] = self.game.turn
             self.game.apply_move((self_y, self_x))
         
@@ -158,7 +159,8 @@ class Game_Interface:
                 rect = (self.border + col * self.square,
                         self.border + row * self.square,
                         self.square, self.square)
-                circle_center = (self.border + (col + 0.5) * self.square, self.border + (row + 0.5) * self.square)
+                circle_center = (self.border + (col + 0.5) * self.square, 
+                                    self.border + (row + 0.5) * self.square)
                 pygame.draw.rect(self.surface, board_color,
                                  rect=rect)
                 if self.game.legal_move((row, col)):
@@ -166,7 +168,9 @@ class Game_Interface:
                 pygame.draw.rect(self.surface, background_color,
                                      rect=rect, width=1)
                 if self.game.grid[row][col] is not None:
-                    pygame.draw.circle(self.surface, self.color_list[self.game.grid[row][col] - 1], circle_center, circle_radius)
+                    pygame.draw.circle(self.surface,
+                    self.color_list[self.game.grid[row][col] - 1],
+                    circle_center, circle_radius)
 
         if self.game.done:
             self.game_over()
