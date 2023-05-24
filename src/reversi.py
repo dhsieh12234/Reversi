@@ -697,7 +697,7 @@ class Reversi(ReversiBase):
 
     def simulate_moves(self,
                        moves: ListMovesType
-                       ) -> "ReversiBase":
+                       ) -> "Reversi":
         """
         Simulates the effect of making a sequence of moves,
         **without** altering the state of the game (instead,
