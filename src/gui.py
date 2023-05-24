@@ -1,13 +1,27 @@
 import os
 import sys
 import math
-from typing import List, Tuple
-from mocks import ReversiMock, BoardGridType
+import click
+from typing import List, Tuple, Optional
+from reversi import Reversi, Board, BoardGridType, COLORS
+from bot import ReversiBot
+from termcolor import colored, cprint
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame  # pylint: disable=wrong-import-position
 
-side: int = int(sys.argv[1])
+
+@click.command("gui")
+@click.option("-n", "--num-players", default = 2)
+@click.option("-s", "--board-size", default = 8)
+@click.option("--othello", is_flag = True)
+@click.option("--non-othello", is_flag = True)
+@click.option("--bot",
+              type = click.Choice(["random", "smart", "very-smart"]),
+              default = None)
+def run_game(num_players: int, board_size: int, othello: bool, 
+             non_othello: bool, bot: Optional[str]):
+    Game_Interface(Reversi(board_size, num_players, not non_othello))
 
 class Game_Interface:
     """
@@ -20,7 +34,7 @@ class Game_Interface:
     surface : pygame.surface.Surface
     clock : pygame.time.Clock
 
-    def __init__(self, game: ReversiMock):
+    def __init__(self, game: Reversi):
         """
         Constructor
 
@@ -177,4 +191,4 @@ class Game_Interface:
 
 
 if __name__ == "__main__":
-    Game_Interface(ReversiMock(side, 2, True))
+    run_game()
