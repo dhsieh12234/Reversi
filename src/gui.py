@@ -47,7 +47,6 @@ class Game_Interface:
         self.window = 600
         self.border = 10
         self.cells_side = self.game.size
-        self.grid = self.game.grid
         self.square = (self.window - 2 * self.border) // self.cells_side
         self.players = game.num_players
         # Initialize Pygame
@@ -80,12 +79,19 @@ class Game_Interface:
         if self.border < x < grid_edge:
             self_y = (y - self.border) // (self.square)
         if self_x is not None and self_y is not None and self.game.legal_move((self_y, self_x)):
-            self.grid[self_y][self_x] = self.game.turn
+            self.game.grid[self_y][self_x] = self.game.turn
             self.game.apply_move((self_y, self_x))
         
     def game_over(self) -> None:
         player_1_color = (155, 155, 155)
         player_2_color = (105, 105, 105)
+        if len(self.game.outcome) > 1:
+            self.surface.fill((255, 87, 51))
+            my_font = pygame.font.SysFont('Impact', 155)
+            text_surface = my_font.render('GAME OVER', False, (35, 35, 35))
+            self.surface.blit(text_surface, (0, 0))
+            text_surface = my_font.render('TIE', False, (35, 35, 35))
+            self.surface.blit(text_surface, (0, 300))
         if self.game.outcome[0] == 1:
             win_color = player_1_color
         if self.game.outcome[0] == 2:
@@ -152,9 +158,9 @@ class Game_Interface:
                     pygame.draw.rect(self.surface, turn_color, rect=rect)
                 pygame.draw.rect(self.surface, background_color,
                                      rect=rect, width=1)
-                if self.grid[row][col] == 1:
+                if self.game.grid[row][col] == 1:
                     pygame.draw.circle(self.surface, player_1_color, circle_center, circle_radius)
-                elif self.grid[row][col] == 2:
+                elif self.game.grid[row][col] == 2:
                     pygame.draw.circle(self.surface, player_2_color, circle_center, circle_radius)
         if self.game.done:
             self.game_over()
