@@ -685,12 +685,11 @@ class Reversi(ReversiBase):
 
         #check if the loaded game is done
         sim_game: Reversi = deepcopy(self)
-        sim_game._total_turns += 1
         next_player = sim_game.turn
         while sim_game.available_moves == []:
             sim_game._total_turns += 1
             if sim_game.turn == next_player:
-                sim_game._done = True
+                self._done = True
                 break
 
 
