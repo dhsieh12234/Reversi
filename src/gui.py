@@ -51,7 +51,7 @@ class Game_Interface:
         self.players = game.num_players
         player_1_color = (155, 155, 155)
         player_2_color = (105, 105, 105)
-        player_3_color = (172, 55, 238)
+        player_3_color = (8, 39, 245)
         player_4_color = (8, 255, 8)
         player_5_color = (255, 173, 0)
         player_6_color = (251, 72, 196)
@@ -107,19 +107,8 @@ class Game_Interface:
             text_surface = my_font.render(tie_txt, False, (35, 35, 35))
             self.surface.blit(text_surface, (0, 300))
 
-        r_tot = 0
-        g_tot = 0
-        b_tot = 0
-        for x, y in enumerate(self.game.outcome):
-            r, g, b = self.color_list[x]
-            r_tot += r
-            g_tot += g
-            b_tot += b
-        r_tot = r_tot / len(self.game.outcome)
-        g_tot = g_tot / len(self.game.outcome)
-        b_tot = b_tot / len(self.game.outcome)
-        win_color = (r_tot, g_tot, b_tot)
 
+        win_color = (self.color_list[self.game.outcome[0] - 1])
         self.surface.fill(win_color)
         my_font = pygame.font.SysFont('Impact', 155)
         text_surface = my_font.render('GAME OVER', False, (35, 35, 35))
@@ -141,7 +130,7 @@ class Game_Interface:
 
         Returns: nothing
         """
-        turn_color = self.color_list[self.game.turn] - 1
+        turn_color = self.color_list[self.game.turn - 1]
         background_color = (35, 35, 35)
         board_color = (75, 75, 75)
         circle_radius = self.square // 2 - 5
