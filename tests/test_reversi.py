@@ -323,25 +323,28 @@ def test_not_othello2():
         (5, 5)
     ]
     helper_avalible_legal(game, avalible)
-    applied = [
-        (3, 3),
-        (5, 5),
-        (3, 5),
-        (4, 4),
-        (3, 4),
-        (4, 5),
-        (5, 4),
-        (4, 3),
-        (5, 3)
-    ]
-    helper_apply_move(game, applied)
+    first_stage = [[None, None, None, None, None, None, None, None, None],
+                   [None, None, None, None, None, None, None, None, None],
+                   [None, None, None, None, None, None, None, None, None],
+                   [None, None, None,    1,    2,    3, None, None, None],
+                   [None, None, None,    2,    1,    3, None, None, None],
+                   [None, None, None,    3,    1,    2, None, None, None],
+                   [None, None, None, None, None, None, None, None, None],
+                   [None, None, None, None, None, None, None, None, None],
+                   [None, None, None, None, None, None, None, None, None]]
+    game.load_game(1, first_stage)
     legal = [
-        (4, 2),
-        (5, 2),
+        (2, 4),
+        (2, 6),
+        (3, 2),
         (3, 6),
+        (4, 2),
         (4, 6),
+        (5, 2),
         (5, 6),
-        (6, 6),
+        (6, 2),
+        (6, 3),
+        (6, 6)
     ]
     helper_avalible_legal(game, legal)
 
