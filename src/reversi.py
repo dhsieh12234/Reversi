@@ -8,7 +8,7 @@ from typing import List, Dict, Reversible, Tuple, Optional
 from copy import deepcopy
 from termcolor import colored, cprint
 
-COLORS: List[str] = ["", "dark_grey", "white", "red", "blue", "green", 
+COLORS: List[str] = ["", "dark_grey", "white", "red", "blue", "green",
                      "yellow", "magenta", "cyan", "light_cyan"]
 
 BoardGridType = List[List[Optional[int]]]
@@ -262,7 +262,7 @@ class Piece:
         Returns: a colored string representation of the piece.
         """
         return colored(str(self.name), COLORS[self.name])
-    
+
     def __repr__(self) -> str:
         """
         Returns: an uncolored string representation of the piece.
@@ -462,7 +462,7 @@ class Reversi(ReversiBase):
                 if self._board.grid[x][y] is None:
                     return True
         return False
-    
+
     @property
     def done(self) -> bool:
         """
@@ -538,13 +538,13 @@ class Reversi(ReversiBase):
         n: int = (self._side - self._players) // 2
         inner_square_indices: List[int] = list(range(n, self._side - n))
         if self.prelim:
-            return (i in inner_square_indices) and (j in inner_square_indices)    
+            return (i in inner_square_indices) and (j in inner_square_indices)
 
         #legal moves after the preliminary phase
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
                (0, -1), (1, -1), (1, 0), (1, 1)]
-        
+
         for d in directions:
             k, l = d
             m: int = 1
@@ -562,7 +562,7 @@ class Reversi(ReversiBase):
         #to check legal moves we could just return len(self.captures(pos)) > 0
         # but that would be less efficient
 
-    def captures(self, pos: Tuple[int, int], 
+    def captures(self, pos: Tuple[int, int],
                  players: List[int] = list(range(1, 10))) \
                     -> List[Tuple[int, int]]:
         """
@@ -570,13 +570,13 @@ class Reversi(ReversiBase):
         Args:
             pos: Position on the board
         Returns: Pieces captured
-        """        
+        """
         i, j = pos
 
         #no captures occur during the preliminary phase
         if self.prelim:
             return []
-        
+
         #captures after the preliminary phase
         directions: List[Tuple[int, int]] \
             = [(0, 1), (-1, 1), (-1, 0), (-1, -1), \
@@ -599,7 +599,7 @@ class Reversi(ReversiBase):
                 n += 1
             continue
         return captured_pieces
-    
+
     def apply_move(self, pos: Tuple[int, int]) -> None:
         """
         Place a piece of the current player (as returned
@@ -631,11 +631,12 @@ class Reversi(ReversiBase):
                              "of the board.")
         i, j = pos
         self._board.grid[i][j] = Piece(self.turn)
+        if self.prelim:
+            return
 
         #captures
-        if not self.prelim:
-            for x, y in self.captures(pos):
-                self._board.grid[x][y] = Piece(self.turn)
+        for x, y in self.captures(pos):
+            self._board.grid[x][y] = Piece(self.turn)
 
         #update turns and check if done
         self._total_turns += 1
@@ -695,7 +696,7 @@ class Reversi(ReversiBase):
 
     def simulate_moves(self,
                        moves: ListMovesType
-                       ) -> "Reversi":
+                       ) -> "ReversiBase":
         """
         Simulates the effect of making a sequence of moves,
         **without** altering the state of the game (instead,
