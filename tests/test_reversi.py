@@ -13,14 +13,6 @@ def helper_avalible_legal(game: Reversi, moves: list[tuple[int, int]]):
         assert game.legal_move(vals) == True
         assert vals in moves, f"[{vals}] is not a legal move"
 
-def helper_apply_move(game: Reversi, moves: list[tuple[int, int]]) -> None:
-    """
-    A helper that adds the moves to a board and return the board
-    """
-    for mov in moves:
-        game.apply_move(mov)
-
-
 def test_size_2():
     """
     Testing the size of the Othello Board 4x4 without configuration
@@ -344,39 +336,20 @@ def test_not_othello3():
     Testing a full game of 5x5 not othello
     """
     game = Reversi(side=5, players=3, othello=False)
-    apply = [
-        (1, 1),
-        (1, 2),
-        (1, 3),
-        (2, 1),
-        (2, 2),
-        (2, 3),
-        (3, 1),
-        (3, 2),
-        (3, 3),
-        (1, 4),
-        (2, 4),
-        (0, 3),
-        (3, 4),
-        (0, 0),
-        (4, 3),
-        (1, 0),
-        (2, 0),
-        (3, 0),
-        (4, 1),
-        (4, 0),
-        (0, 2),
-        (4, 2),
-        (0, 4),
-        (4, 4),
-        (0, 1)
-    ]
-    helper_apply_move(game, apply)
-    model_ending = [[3, 2, 1, 1, 3],
+    ending_stage = [[2, 2, 2, 2, 2],
                     [3, 2, 2, 3, 2],
-                    [3, 2, 3, 2, 2],
-                    [3, 3, 2, 2, 2],
-                    [3, 2, 2, 1, 1]]
+                    [1, 2, 3, 3, 1],
+                    [2, 2, 2, 2, 2],
+                    [2, 2, None, None, None]]
+    game.load_game(1, ending_stage)
+    game.apply_move((4, 2))
+    game.apply_move((4, 3))
+    game.apply_move((4, 4))
+    model_ending = [[2, 2, 2, 2, 2],
+                    [3, 2, 2, 2, 2],
+                    [1, 2, 3, 2, 1],
+                    [2, 1, 2, 3, 2],
+                    [2, 2, 2, 2, 3]]
     assert game.grid == model_ending
     assert game.done == True
     assert game.outcome == [2]
@@ -460,9 +433,9 @@ def test_simulate_move_1():
     ]
 
     # Check that the original game state has been preserved
-    assert game.grid == grid_orig
-    assert game.turn == 1
-    assert set(game.available_moves) == set(legal)
+    assert game.grid == grid_orig, "simulate move doesn't work"
+    assert game.turn == 1, "turn not updating"
+    assert set(game.available_moves) == set(legal), "move options arn't working"
     assert not game.done
     assert game.outcome == []
 
@@ -627,7 +600,7 @@ def test_endgame_8():
                    [1, 1, 1, 1, 1, 1, 1, 1],
                    [1, 1, 1, 1, 1, 1, 1, 1]]
     game.load_game(1, final_board)
-    assert game.done == True
+    assert game.done == True, "the are no moves to make, game should be dome"
     assert len(game.outcome) == 1
     assert 1 in game.outcome
 
@@ -645,7 +618,7 @@ def test_endgame_8_tie():
                    [2, 2, 2, 2, 2, 2, 2, 2],
                    [2, 2, 2, 2, 2, 2, 2, 2]]
     game.load_game(2, final_board)
-    assert game.done == True
+    assert game.done == True, "the are no moves to make, game should be dome"
     assert len(game.outcome) == 2
     assert 1 in game.outcome
     assert 2 in game.outcome
@@ -663,7 +636,7 @@ def test_endgame_7_winner():
                    [3, 3, 3, 3, 3, 3, 3],
                    [3, 3, 3, 3, 3, 3, 3]]
     game.load_game(3, final_board)
-    assert game.done == True
+    assert game.done == True, "the are no moves to make, game should be dome"
     assert len(game.outcome) == 1
     assert 3 in game.outcome
 
@@ -680,7 +653,7 @@ def test_endgame_7_tie():
                    [2, 2, 2, 2, 2, 2, 2],
                    [3, 3, 3, 3, 3, 3, 3]]
     game.load_game(1, final_board)
-    assert game.done == True
+    assert game.done == True, "No more avalible squares, game is over"
     assert len(game.outcome) == 2
     assert 1 in game.outcome
     assert 2 in game.outcome
@@ -699,9 +672,9 @@ def test_early_ending_8():
                    [None, None, None, None, None, None, None, None],
                    [None, None, None, None, None, None, None, None]]
     game.load_game(2, final_board)
-    assert game.done == True
-    assert len(game.outcome) == 1
-    assert 1 in game.outcome
+    assert game.done == True, "the are no moves to make, game should be dome"
+    assert len(game.outcome) == 1, "1 has more pieces and should be winning"
+    assert 1 in game.outcome, "1 has more pieces and should be winning"
 
 
 
