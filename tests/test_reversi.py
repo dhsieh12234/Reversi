@@ -232,7 +232,7 @@ def test_othello_6side():
                     (r, c)
                 ), f"{(r,c)} is not a legal move, but legal_move returned True"
 
-def test_othello_6side():
+def test_othello_6_side():
     """
     Testing the initialization of a game of othello 6x6
     """
