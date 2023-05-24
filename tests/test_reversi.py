@@ -440,39 +440,16 @@ def test_skip_move():
     Black should have to skip their move
     """
     game = Reversi(side=8, players=2, othello=True)
-    apply = [
-        (2, 3),
-        (2, 2),
-        (2, 1),
-        (1, 1),
-        (0, 1),
-        (0, 0),
-        (4, 5),
-        (5, 5),
-        (6, 5),
-        (6, 6),
-        (6, 7),
-        (7, 7),
-        (3, 2),
-        (0, 2),
-        (1, 2),
-        (6, 4),
-        (1, 0),
-        (5, 7),
-        (5, 4),
-        (2, 0),
-        (5, 6),
-        (4, 7),
-        (7, 4),
-        (1, 3),
-        (0, 3),
-        (0, 4),
-        (7, 5),
-        (1, 4),
-        (0, 5),
-        (3, 0)
-    ]
-    helper_apply_move(game, apply)
+    skip_board = [[   1,    1,    1,    1,    1, None, None, None],
+                  [   2,    2,    1, None,    1, None, None, None],
+                  [   1,    1,    1,    1,    1, None, None, None],
+                  [None, None,    1,    1, None, None, None, None],
+                  [None, None, None,    1,    1, None, None, None],
+                  [None, None, None, None, None, None, None, None],
+                  [None, None, None, None, None, None, None, None],
+                  [None, None, None, None, None, None, None, None]]
+    game.load_game(2, skip_board)
+    game.apply_move((1, 3))
     assert game.turn == 2, "Turn skipping doesn't work"
 
 def test_simulate_move_1():
