@@ -49,6 +49,18 @@ class Game_Interface:
         self.cells_side = self.game.size
         self.square = (self.window - 2 * self.border) // self.cells_side
         self.players = game.num_players
+        player_1_color = (155, 155, 155)
+        player_2_color = (105, 105, 105)
+        player_3_color = (172, 55, 238)
+        player_4_color = (8, 255, 8)
+        player_5_color = (255, 173, 0)
+        player_6_color = (251, 72, 196)
+        player_7_color = (235, 33, 46)
+        player_8_color = (199, 36, 177)
+        player_9_color = (254, 219, 0)
+        self.color_list = [player_1_color, player_2_color, player_3_color, 
+                            player_4_color, player_5_color, player_6_color,
+                            player_7_color, player_8_color, player_9_color]
         # Initialize Pygame
         pygame.init()
         # Set window title
@@ -83,26 +95,38 @@ class Game_Interface:
             self.game.apply_move((self_y, self_x))
         
     def game_over(self) -> None:
-        player_1_color = (155, 155, 155)
-        player_2_color = (105, 105, 105)
+        list_str = map(str, self.game.outcome)
+        winners = ' '.join(list_str)
         if len(self.game.outcome) > 1:
             self.surface.fill((255, 87, 51))
             my_font = pygame.font.SysFont('Impact', 155)
             text_surface = my_font.render('GAME OVER', False, (35, 35, 35))
             self.surface.blit(text_surface, (0, 0))
-            text_surface = my_font.render('TIE', False, (35, 35, 35))
+            tie_txt = "TIE BETWEEN {}"
+            tie_txt = tie_txt.format(winners)
+            text_surface = my_font.render(tie_txt, False, (35, 35, 35))
             self.surface.blit(text_surface, (0, 300))
-        if self.game.outcome[0] == 1:
-            win_color = player_1_color
-        if self.game.outcome[0] == 2:
-            win_color = player_2_color
+
+        r_tot = 0
+        g_tot = 0
+        b_tot = 0
+        for x, y in enumerate(self.game.outcome):
+            r, g, b = self.color_list[x]
+            r_tot += r
+            g_tot += g
+            b_tot += b
+        r_tot = r_tot / len(self.game.outcome)
+        g_tot = g_tot / len(self.game.outcome)
+        b_tot = b_tot / len(self.game.outcome)
+        win_color = (r_tot, g_tot, b_tot)
+
         self.surface.fill(win_color)
         my_font = pygame.font.SysFont('Impact', 155)
         text_surface = my_font.render('GAME OVER', False, (35, 35, 35))
         self.surface.blit(text_surface, (0, 0))
         my_font = pygame.font.SysFont('Impact', 117)
         winner = "PLAYER {} WINS"
-        winner = winner.format(self.game.outcome[0])
+        winner = winner.format(winners)
         text_surface = my_font.render(winner, False, (35, 35, 35))
         self.surface.blit(text_surface, (0, 300))
 
@@ -117,13 +141,7 @@ class Game_Interface:
 
         Returns: nothing
         """
-        player_1_color = (155, 155, 155)
-        player_2_color = (105, 105, 105)
-        turn_color = (0, 0, 0)
-        if self.game.turn == 1:
-            turn_color = player_1_color
-        if self.game.turn == 2:
-            turn_color = player_2_color
+        turn_color = self.color_list[self.game.turn] - 1
         background_color = (35, 35, 35)
         board_color = (75, 75, 75)
         circle_radius = self.square // 2 - 5
@@ -158,10 +176,9 @@ class Game_Interface:
                     pygame.draw.rect(self.surface, turn_color, rect=rect)
                 pygame.draw.rect(self.surface, background_color,
                                      rect=rect, width=1)
-                if self.game.grid[row][col] == 1:
-                    pygame.draw.circle(self.surface, player_1_color, circle_center, circle_radius)
-                elif self.game.grid[row][col] == 2:
-                    pygame.draw.circle(self.surface, player_2_color, circle_center, circle_radius)
+                if self.game.grid[row][col] is not None:
+                    pygame.draw.circle(self.surface, self.color_list[self.game.grid[row][col] - 1], circle_center, circle_radius)
+
         if self.game.done:
             self.game_over()
 
