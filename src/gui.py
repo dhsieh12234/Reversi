@@ -141,7 +141,7 @@ class Game_Interface:
         my_font = pygame.font.SysFont('Impact', font_size)
         text_surface = my_font.render('TURN', False, board_color)
         self.surface.blit(text_surface, text_loc)
-        pygame.draw.rect(self.surface, board_color, turn_rect)
+        pygame.draw.rect(self.surface, board_color, rect = turn_rect)
         pygame.draw.circle(self.surface, turn_color, turn_center, circle_radius)
 
         
