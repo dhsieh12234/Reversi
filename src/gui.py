@@ -160,9 +160,8 @@ class Game_Interface:
                 pygame.draw.rect(self.surface, background_color,
                                      rect=rect, width=1)
                 if self.game.grid[row][col] is not None:
-                    pygame.draw.circle(self.surface,
-                    self.color_list[self.game.grid[row][col] - 1],
-                    circle_center, circle_radius)
+                    color : Tuple[int, int, int] = self.color_list[self.game.grid[row][col] - 1]
+                    pygame.draw.circle(self.surface, color, circle_center, circle_radius)
 
         if self.game.done:
             self.game_over()
