@@ -44,23 +44,15 @@ class Game_Interface:
             cells_side : int : number of cells on a side of a square bitmap grid
         """
         self.game = game
-        self.window = 600
-        self.border = 10
-        self.cells_side = self.game.size
-        self.square = (self.window - 2 * self.border) // self.cells_side
+        self.window : int = 600
+        self.border : int = 10
+        self.cells_side : int = self.game.size
+        self.square : int = (self.window - 2 * self.border) // self.cells_side
         self.players = game.num_players
-        player_1_color = (155, 155, 155)
-        player_2_color = (105, 105, 105)
-        player_3_color = (8, 39, 245)
-        player_4_color = (8, 255, 8)
-        player_5_color = (255, 173, 0)
-        player_6_color = (251, 72, 196)
-        player_7_color = (235, 33, 46)
-        player_8_color = (199, 36, 177)
-        player_9_color = (254, 219, 0)
-        self.color_list = [player_1_color, player_2_color, player_3_color, 
-                            player_4_color, player_5_color, player_6_color,
-                            player_7_color, player_8_color, player_9_color]
+        self.color_list: List[Tuple[int, int, int]] = [(155, 155, 155),
+                            (105, 105, 105), (8, 39, 245), (8, 255, 8),
+                            (255, 173, 0), (251, 72, 196), (235, 33, 46),
+                            (199, 36, 177), (254, 219, 0)]
         # Initialize Pygame
         pygame.init()
         # Set window title
@@ -83,9 +75,9 @@ class Game_Interface:
         Returns: nothing
         """
         x, y = loc
-        self_x = None
-        self_y = None
-        grid_edge = self.border + self.square * self.cells_side
+        self_x : Optional[int] = None
+        self_y : Optional[int] = None
+        grid_edge : int = self.border + self.square * self.cells_side
         if self.border < x < grid_edge:
             self_x = (x - self.border) // (self.square)
         if self.border < x < grid_edge:
@@ -96,26 +88,26 @@ class Game_Interface:
             self.game.apply_move((self_y, self_x))
         
     def game_over(self) -> None:
-        list_str = map(str, self.game.outcome)
-        winners = ' '.join(list_str)
+        list_str : map[str] = map(str, self.game.outcome)
+        winners : str = ' '.join(list_str)
         if len(self.game.outcome) > 1:
             self.surface.fill((255, 87, 51))
             my_font = pygame.font.SysFont('Impact', 155)
             text_surface = my_font.render('GAME OVER', False, (35, 35, 35))
             self.surface.blit(text_surface, (0, 0))
-            tie_txt = "TIE BETWEEN {}"
+            tie_txt : str = "TIE BETWEEN {}"
             tie_txt = tie_txt.format(winners)
             text_surface = my_font.render(tie_txt, False, (35, 35, 35))
             self.surface.blit(text_surface, (0, 300))
 
 
-        win_color = (self.color_list[self.game.outcome[0] - 1])
+        win_color : Tuple[int, int, int] = (self.color_list[self.game.outcome[0] - 1])
         self.surface.fill(win_color)
         my_font = pygame.font.SysFont('Impact', 155)
         text_surface = my_font.render('GAME OVER', False, (35, 35, 35))
         self.surface.blit(text_surface, (0, 0))
         my_font = pygame.font.SysFont('Impact', 117)
-        winner = "PLAYER {} WINS"
+        winner : str = "PLAYER {} WINS"
         winner = winner.format(winners)
         text_surface = my_font.render(winner, False, (35, 35, 35))
         self.surface.blit(text_surface, (0, 300))
@@ -131,19 +123,19 @@ class Game_Interface:
 
         Returns: nothing
         """
-        turn_color = self.color_list[self.game.turn - 1]
-        background_color = (35, 35, 35)
-        board_color = (75, 75, 75)
-        circle_radius = self.square // 2 - 5
+        turn_color: Tuple[int, int, int] = self.color_list[self.game.turn - 1]
+        background_color: Tuple[int, int, int] = (35, 35, 35)
+        board_color: Tuple[int, int, int] = (75, 75, 75)
+        circle_radius: int = self.square // 2 - 5
 
         #Create the Background and Turn
-        turn_center = (self.border + self.square * (self.cells_side + 1), 
+        turn_center : Tuple[int, float]= (self.border + self.square * (self.cells_side + 1), 
                         self.border + 2.5 * self.square)
-        turn_rect = (self.border + self.square * (self.cells_side + 0.5), 
+        turn_rect : Tuple[float, int, int, int] = (self.border + self.square * (self.cells_side + 0.5), 
                     self.border + 2 * self.square , self.square, self.square)
-        text_loc = (self.border + self.square * (self.cells_side + 0.5), 
+        text_loc : Tuple[float, float] = (self.border + self.square * (self.cells_side + 0.5), 
                     self.border + 1.5 * self.square)
-        font_size = int(self.square // 2.2)
+        font_size : int = int(self.square // 2.2)
 
         self.surface.fill(background_color)
         my_font = pygame.font.SysFont('Impact', font_size)
@@ -156,10 +148,10 @@ class Game_Interface:
         #Places Pieces
         for row in range(self.cells_side):
             for col in range(self.cells_side):
-                rect = (self.border + col * self.square,
+                rect : Tuple[int, int, int, int]= (self.border + col * self.square,
                         self.border + row * self.square,
                         self.square, self.square)
-                circle_center = (self.border + (col + 0.5) * self.square, 
+                circle_center : Tuple[float, float] = (self.border + (col + 0.5) * self.square, 
                                     self.border + (row + 0.5) * self.square)
                 pygame.draw.rect(self.surface, board_color,
                                  rect=rect)
