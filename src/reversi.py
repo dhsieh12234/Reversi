@@ -631,12 +631,11 @@ class Reversi(ReversiBase):
                              "of the board.")
         i, j = pos
         self._board.grid[i][j] = Piece(self.turn)
-        if self.prelim:
-            return
 
         #captures
-        for x, y in self.captures(pos):
-            self._board.grid[x][y] = Piece(self.turn)
+        if not self.prelim:
+            for x, y in self.captures(pos):
+                self._board.grid[x][y] = Piece(self.turn)
 
         #update turns and check if done
         self._total_turns += 1
