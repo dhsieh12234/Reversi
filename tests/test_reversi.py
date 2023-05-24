@@ -386,7 +386,7 @@ def test_not_othello3():
         [2, 2, 3, 2, 1],
         [2, 2, 2, 1, 1],
         [2, 2, 1, 1, 1],
-        [2, 1, 1, 1, 1 ]
+        [2, 1, 1, 1, 1]
     ]
     assert game.grid == model_ending
     assert game.done == True
@@ -647,14 +647,95 @@ def test_simulate_moves_5():
     assert final_reversi.outcome == []
 
 
+def test_endgame_8():
+    """
+    a test ending for the 8 by 8 game with 2 players, one winner
+    """
+    game = Reversi(side=8, players=2, othello=False)
+    final_board = [[1, 2, 1, 1, 1, 1, 1, 1],
+                   [2, 1, 1, 1, 2, 1, 1, 1],
+                   [2, 2, 2, 2, 1, 1, 2, 1],
+                   [1, 1, 1, 1, 1, 1, 1, 1],
+                   [2, 2, 2, 2, 2, 2, 2, 2],
+                   [1, 1, 1, 1, 1, 1, 1, 1],
+                   [1, 1, 1, 1, 1, 1, 1, 1],
+                   [1, 1, 1, 1, 1, 1, 1, 1]]
+    game.load_game(1, final_board)
+    assert game.done == True
+    assert len(game.outcome) == 1
+    assert 1 in game.outcome
 
+def test_endgame_8_tie():
+    """
+    A test ending of a 8 by 8 two player game with a tied ending and full board
+    """
+    game = Reversi(side=8, players=2, othello=False)
+    final_board = [[1, 1, 1, 1, 1, 1, 1, 1],
+                   [1, 1, 1, 1, 1, 1, 1, 1],
+                   [2, 2, 2, 2, 2, 2, 2, 2],
+                   [1, 1, 1, 1, 1, 1, 1, 1],
+                   [1, 1, 1, 1, 1, 1, 1, 1],
+                   [2, 2, 2, 2, 2, 2, 2, 2],
+                   [2, 2, 2, 2, 2, 2, 2, 2],
+                   [2, 2, 2, 2, 2, 2, 2, 2]]
+    game.load_game(2, final_board)
+    assert game.done == True
+    assert len(game.outcome) == 2
+    assert 1 in game.outcome
+    assert 2 in game.outcome
 
+def test_endgame_7_winner():
+    """
+    A test ending of a 7 by 7 game with three players, one winning
+    """
+    game = Reversi(side=7, players=3, othello=False)
+    final_board = [[1, 2, 3, 1, 1, 2, 3],
+                   [3, 3, 3, 3, 3, 3, 3],
+                   [2, 3, 3, 3, 1, 3, 3],
+                   [2, 2, 1, 1, 3, 3, 3],
+                   [3, 3, 3, 3, 3, 3, 3],
+                   [3, 3, 3, 3, 3, 3, 3],
+                   [3, 3, 3, 3, 3, 3, 3]]
+    game.load_game(3, final_board)
+    assert game.done == True
+    assert len(game.outcome) == 1
+    assert 3 in game.outcome
 
+def test_endgame_7_tie():
+    """
+    A test ending of a 7 by 7 game with three players, two tieing
+    """
+    game = Reversi(side=7, players=3, othello=False)
+    final_board = [[1, 1, 1, 1, 1, 1, 1],
+                   [1, 1, 1, 1, 1, 1, 1],
+                   [1, 1, 1, 1, 1, 1, 1],
+                   [2, 2, 2, 2, 2, 2, 2],
+                   [2, 2, 2, 2, 2, 2, 2],
+                   [2, 2, 2, 2, 2, 2, 2],
+                   [3, 3, 3, 3, 3, 3, 3]]
+    game.load_game(1, final_board)
+    assert game.done == True
+    assert len(game.outcome) == 2
+    assert 1 in game.outcome
+    assert 2 in game.outcome
 
-
-
-
-
+def test_early_ending_8():
+    """
+    Both players have no moves before game is over, but one wins
+    """
+    game = Reversi(side=8, players=2, othello=False)
+    final_board = [[   1,    1,    1, None, None, None, None, None],
+                   [None,    1,    1, None, None, None, None, None],
+                   [None,    1,    1,    1,    1, None, None, None],
+                   [None, None, None,    1,    1, None, None, None],
+                   [None, None, None,    1,    1, None, None, None],
+                   [None, None, None,    1,    1, None, None, None],
+                   [None, None, None, None, None, None, None, None],
+                   [None, None, None, None, None, None, None, None]]
+    game.load_game(2, final_board)
+    assert game.done == True
+    assert len(game.outcome) == 1
+    assert 1 in game.outcome
 
 
 
