@@ -434,8 +434,8 @@ def test_skip_move():
     skip_board = [[   1,    1,    1,    1,    1, None, None, None],
                   [   2,    2,    1, None,    1, None, None, None],
                   [   1,    1,    1,    1,    1, None, None, None],
-                  [None, None,    1,    1, None, None, None, None],
-                  [None, None, None,    1,    1, None, None, None],
+                  [None, None,    1,    1,    1, None, None, None],
+                  [None, None,    1,    1,    1, None, None, None],
                   [None, None, None, None, None, None, None, None],
                   [None, None, None, None, None, None, None, None],
                   [None, None, None, None, None, None, None, None]]
