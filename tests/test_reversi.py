@@ -193,24 +193,15 @@ def test_othello_game_over():
     Testing an endgame of othello
     """
     game = Reversi(side=4, players=2, othello=True)
-    moves = [
-        (0, 1),
-        (2, 0),
-        (3, 0),
-        (0, 2),
-        (0, 3),
-        (1, 3),
-        (1, 0),
-        (3, 1),
-        (3, 2),
-        (3, 3),
-        (2, 3),
-        (0, 0)
-    ]
-    helper_apply_move(game, moves)
+    moves = [[2, 2, 1, 1],
+             [2, 2, 2, 2],
+             [2, 2, 2, 2],
+             [2, 2, 2, None]]
+    game.load_game(1, moves)
+    game.apply_move((3, 3))
     assert game.done == True, f"There should be no avalible moves left and the players are tied"
     assert len(game.outcome) == 1, f"There are two winners, they each have 19"
-    assert 1 in game.outcome
+    assert 2 in game.outcome
 
 
 def test_othello_6side():
